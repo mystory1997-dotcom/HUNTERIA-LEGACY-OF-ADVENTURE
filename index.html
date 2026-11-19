@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HUNTERIA: LEGACY OF ADVENTURE</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { background: #0d0b0a; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+
+  .game-screen {
+    position: relative;
+    width: 100vw;
+    max-width: 1280px;
+    aspect-ratio: 16 / 9;
+    background: url('login.jpg') center/cover no-repeat;
+    box-shadow: 0 0 40px rgba(0,0,0,0.9);
+    overflow: hidden;
+  }
+
+  .input-username {
+    position: absolute;
+    left: 78.8%;
+    top: 32.3%;
+    width: 17.8%;
+    height: 4.6%;
+    background: transparent;
+    border: none;
+    color: #fff3d6;
+    font-size: clamp(12px, 1.3vw, 18px);
+    padding: 0 8px;
+    outline: none;
+  }
+
+  .input-password {
+    position: absolute;
+    left: 78.8%;
+    top: 41.0%;
+    width: 17.8%;
+    height: 4.6%;
+    background: transparent;
+    border: none;
+    color: #fff3d6;
+    font-size: clamp(12px, 1.3vw, 18px);
+    padding: 0 8px;
+    outline: none;
+  }
+
+  .check-save {
+    position: absolute;
+    left: 82.8%;
+    top: 47.2%;
+    width: 1.5%;
+    height: 2.5%;
+    cursor: pointer;
+    accent-color: #d4a359;
+  }
+
+  .btn-start {
+    position: absolute;
+    left: 78.8%;
+    top: 51.8%;
+    width: 17.8%;
+    height: 8.2%;
+    background: transparent;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-start:hover { background: rgba(255, 230, 150, 0.15); box-shadow: 0 0 15px rgba(72, 187, 255, 0.5); }
+  .btn-start:active { transform: scale(0.97); }
+
+  .btn-server {
+    position: absolute;
+    left: 80.5%;
+    top: 62.0%;
+    width: 14.5%;
+    height: 6.5%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-register {
+    position: absolute;
+    left: 79.5%;
+    top: 70.6%;
+    width: 16.5%;
+    height: 4.6%;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn-register:hover, .btn-options:hover { background: rgba(255, 255, 255, 0.1); }
+
+  .btn-options {
+    position: absolute;
+    left: 79.5%;
+    top: 76.2%;
+    width: 16.5%;
+    height: 4.6%;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  /* ปุ่มล็อกอินผ่าน Gmail บริเวณมุมขวาบนใต้กรอบแผงล็อกอิน */
+  .gmail-quick-btn {
+    position: absolute;
+    left: 78.8%;
+    top: 82.2%;
+    width: 17.8%;
+    height: 5.4%;
+    background: linear-gradient(180deg, #ffffff, #f1f3f4);
+    border: 2px solid #c89d54;
+    border-radius: 8px;
+    color: #202124;
+    font-weight: 700;
+    font-size: clamp(11px, 1.15vw, 15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: 0.15s;
+    z-index: 10;
+  }
+  .gmail-quick-btn:hover { background: #ffffff; transform: translateY(-1px); }
+  .gmail-quick-btn:active { transform: scale(0.98); }
+
+  .gmail-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ea4335;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* หน้าต่างเลือกบัญชี Gmail */
+  .modal-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    justify-content: center;
+    align-items: center;
+    z-index: 25;
+  }
+  .modal-box {
+    background: linear-gradient(180deg, #3b2a1e, #241811);
+    border: 2px solid #c89d54;
+    border-radius: 12px;
+    padding: 22px 26px;
+    width: 92%;
+    max-width: 420px;
+    text-align: center;
+    color: #f5e6c8;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.85);
+  }
+  .modal-box h2 { color: #ffd27d; margin-bottom: 10px; font-size: 20px; }
+  .modal-box p { margin-bottom: 16px; font-size: 14px; line-height: 1.5; color: #ebd7b2; }
+
+  .gmail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .gmail-account-item {
+    background: rgba(255, 243, 214, 0.08);
+    border: 1px solid rgba(200, 157, 84, 0.5);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff3d6;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: 0.15s;
+  }
+  .gmail-account-item:hover {
+    background: rgba(255, 210, 125, 0.18);
+    border-color: #ffd27d;
+  }
+  .gmail-account-email { font-weight: 700; font-size: 14px; color: #ffd27d; }
+  .gmail-account-sub { font-size: 12px; color: #d8c39e; }
+
+  .gmail-custom-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .gmail-custom-input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #c89d54;
+    background: #18100b;
+    color: #fff3d6;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .modal-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .modal-btn {
+    background: linear-gradient(180deg, #2d8bc9, #1b5c8a);
+    color: white;
+    border: 1px solid #7cc7f7;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .modal-btn-secondary {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid #9e845c;
+  }
+</style>
+</head>
+<body>
+
+<div class="game-screen">
+  <input type="text" id="username" class="input-username" placeholder="Username / Gmail...">
+  <input type="password" id="password" class="input-password" placeholder="••••••">
+  <input type="checkbox" id="saveAccount" class="check-save" title="Save Account">
+
+  <button class="btn-start" onclick="handleStart()" title="START GAME"></button>
+  <button class="btn-server" onclick="showPopup('เลือกเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ปัจจุบัน: Arcadia (Asia) - สถานะ: ออนไลน์ปกติ')" title="Server Select"></button>
+  <button class="btn-register" onclick="showPopup('สมัครสมาชิก', 'สามารถกรอกอีเมล Gmail แล้วกดปุ่มล็อกอินด้วย Gmail เพื่อเข้าใช้งานได้ทันที')" title="Register"></button>
+  <button class="btn-options" onclick="showPopup('ตั้งค่าเกม', 'เสียงเพลง: เปิด | เอฟเฟกต์: เปิด | คุณภาพกราฟิก: สูง')" title="Options"></button>
+
+  <button type="button" class="gmail-quick-btn" onclick="openGmailLogin()" title="Sign in with Gmail">
+    <span class="gmail-badge">G</span>
+    <span>เข้าสู่ระบบด้วย Gmail</span>
+  </button>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box" id="modalBox">
+      <h2 id="modalTitle">แจ้งเตือน</h2>
+      <p id="modalText">รายละเอียด</p>
+      <div id="modalExtra"></div>
+      <div class="modal-actions" id="modalActions">
+        <button class="modal-btn" onclick="closePopup()">ตกลง</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.onload = () => {
+    const saved = localStorage.getItem('hunteria_user');
+    if (saved) {
+      document.getElementById('username').value = saved;
+      document.getElementById('saveAccount').checked = true;
+    }
+  };
+
+  function handleStart() {
+    const user = document.getElementById('username').value.trim();
+    const save = document.getElementById('saveAccount').checked;
+    if (!user) {
+      showPopup('กรุณากรอกข้อมูล', 'โปรดพิมพ์ Username หรือ Gmail ก่อนกดเริ่มเกมครับ');
+      return;
+    }
+    if (save) localStorage.setItem('hunteria_user', user);
+    else localStorage.removeItem('hunteria_user');
+
+    showPopup('ยินดีต้อนรับนักล่า ' + user, 'ยืนยันตัวตนสำเร็จ กำลังเตรียมเข้าสู่หน้าเลือกตัวละคร...');
+  }
+
+  function openGmailLogin() {
+    const lastGmail = localStorage.getItem('hunteria_gmail') || '';
+    const extraHtml = `
+      <div class="gmail-list">
+        ${lastGmail ? `
+          <div class="gmail-account-item" onclick="completeGmailLogin('${escapeAttr(lastGmail)}')">
+            <span class="gmail-account-email">${escapeHtml(lastGmail)}</span>
+            <span class="gmail-account-sub">บัญชี Gmail ที่ใช้ล่าสุด</span>
+          </div>
+        ` : ''}
+        <div class="gmail-account-item" onclick="completeGmailLogin('hunter.arcadia@gmail.com')">
+          <span class="gmail-account-email">hunter.arcadia@gmail.com</span>
+          <span class="gmail-account-sub">บัญชีนักล่าอาร์คาเดีย</span>
+        </div>
+      </div>
+      <div class="gmail-custom-row">
+        <input type="email" id="customGmailInput" class="gmail-custom-input" placeholder="กรอก @gmail.com ของคุณ...">
+        <button type="button" class="modal-btn" onclick="submitCustomGmail()">ใช้เมลนี้</button>
+      </div>
+    `;
+
+    showPopup('ล็อกอินผ่าน Gmail', 'เลือกบัญชี Gmail หรือกรอกอีเมลของคุณเพื่อเข้าสู่เกม HUNTERIA', extraHtml, `
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closePopup()">ยกเลิก</button>
+    `);
+  }
+
+  function submitCustomGmail() {
+    const input = document.getElementById('customGmailInput');
+    if (!input) return;
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      alert('กรุณากรอกที่อยู่ Gmail ให้ถูกต้องครับ');
+      return;
+    }
+    completeGmailLogin(email);
+  }
+
+  function completeGmailLogin(email) {
+    localStorage.setItem('hunteria_gmail', email);
+    localStorage.setItem('hunteria_user', email);
+    document.getElementById('username').value = email;
+    document.getElementById('saveAccount').checked = true;
+    showPopup('ล็อกอิน Gmail สำเร็จ', 'เชื่อมต่อบัญชี ' + email + ' เรียบร้อยแล้ว กด START GAME เพื่อเข้าสู่โลกอาร์คาเดียได้เลยครับ');
+  }
+
+  function showPopup(title, text, extraHtml = '', actionsHtml = `<button class="modal-btn" onclick="closePopup()">ตกลง</button>`) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalText').innerText = text;
+    document.getElementById('modalExtra').innerHTML = extraHtml;
+    document.getElementById('modalActions').innerHTML = actionsHtml;
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function closePopup() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+  }
+
+  function escapeAttr(str) {
+    return String(str).replace(/'/g, "\\'");
+  }
+</script>
+</body>
+</html>
