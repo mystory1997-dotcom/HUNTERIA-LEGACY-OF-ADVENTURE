@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HUNTERIA: LEGACY OF ADVENTURE</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    /* ปิดกล่องไฮไลต์สีฟ้าเวลาแตะบนมือถือ */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
   body {
     background: #0d0b0a;
     display: flex;
@@ -25,60 +35,101 @@
     overflow: hidden;
   }
 
-  /* ปุ่มใสซ้อนทับกรอบปุ่ม Login with Gmail ในภาพพอดี */
-  .hotspot-gmail {
+  /* คลาสพื้นฐานสำหรับปุ่มเกมที่สมูท */
+  .game-btn {
     position: absolute;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    overflow: hidden;
+    transform: translateZ(0) scale(1);
+    transition:
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease,
+      filter 0.25s ease;
+  }
+  .game-btn:focus,
+  .game-btn:focus-visible {
+    outline: none;
+  }
+
+  /* แสงเรืองนุ่มๆ เฉพาะบนอุปกรณ์ที่มีเมาส์ */
+  @media (hover: hover) {
+    .game-btn:hover {
+      transform: scale(1.02);
+      filter: brightness(1.12);
+    }
+  }
+
+  /* จังหวะนิ้วแตะ/กดปุ่ม: ยุบตัวนุ่มๆ เหมือนปุ่มเกมจริง */
+  .game-btn:active,
+  .game-btn.is-pressed {
+    transform: scale(0.95);
+    filter: brightness(1.22);
+    transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* ปุ่ม Login with Gmail */
+  .hotspot-gmail {
     left: 78.8%;
     top: 31.8%;
     width: 17.8%;
     height: 13.8%;
-    background: transparent;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.15s;
+    border-radius: 12px;
   }
-  .hotspot-gmail:hover {
-    background: rgba(255, 220, 140, 0.14);
-    box-shadow: 0 0 14px rgba(255, 210, 110, 0.45);
+  .hotspot-gmail:active,
+  .hotspot-gmail.is-pressed {
+    box-shadow: inset 0 0 18px rgba(255, 214, 120, 0.45), 0 0 16px rgba(255, 195, 90, 0.35);
   }
-  .hotspot-gmail:active { transform: scale(0.98); }
 
-  /* ปุ่มใสซ้อนทับกรอบ START GAME ในภาพพอดี */
+  /* ปุ่ม START GAME */
   .hotspot-start {
-    position: absolute;
     left: 79.6%;
     top: 51.8%;
     width: 16.2%;
     height: 8.4%;
-    background: transparent;
-    border: none;
-    border-radius: 24px;
-    cursor: pointer;
-    transition: 0.15s;
+    border-radius: 999px;
   }
-  .hotspot-start:hover {
-    background: rgba(90, 200, 255, 0.16);
-    box-shadow: 0 0 16px rgba(72, 187, 255, 0.55);
+  .hotspot-start:active,
+  .hotspot-start.is-pressed {
+    box-shadow: inset 0 0 20px rgba(120, 220, 255, 0.55), 0 0 20px rgba(72, 187, 255, 0.5);
   }
-  .hotspot-start:active { transform: scale(0.97); }
 
-  /* ปุ่มใสซ้อนทับ Server Select: Arcadia (Asia) */
+  /* ปุ่ม Server Select */
   .hotspot-server {
-    position: absolute;
     left: 80.2%;
     top: 62.2%;
     width: 15.0%;
     height: 7.5%;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.15s;
+    border-radius: 10px;
   }
-  .hotspot-server:hover { background: rgba(255, 255, 255, 0.1); }
+  .hotspot-server:active,
+  .hotspot-server.is-pressed {
+    box-shadow: inset 0 0 14px rgba(255, 225, 160, 0.3);
+  }
 
-  /* ป้ายสถานะบัญชีที่ล็อกอินอยู่ มุมขวาบนของแผง Login */
+  /* วงคลื่นแสงสีทองกระจายออกจากจุดที่นิ้วแตะ */
+  .touch-ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(circle, rgba(255, 236, 179, 0.65) 0%, rgba(255, 200, 100, 0.2) 55%, transparent 75%);
+    animation: rippleAnim 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hotspot-start .touch-ripple {
+    background: radial-gradient(circle, rgba(175, 238, 255, 0.75) 0%, rgba(80, 195, 255, 0.25) 55%, transparent 75%);
+  }
+
+  @keyframes rippleAnim {
+    to {
+      transform: translate(-50%, -50%) scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  /* ป้ายสถานะบัญชี */
   .account-status {
     position: absolute;
     left: 78.8%;
@@ -95,31 +146,44 @@
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
+    transition: opacity 0.25s ease;
   }
 
-  /* หน้าต่าง Modal */
+  /* หน้าต่าง Modal แบบค่อยๆ เฟดและขยายนุ่มๆ */
   .modal-overlay {
-    display: none;
+    display: flex;
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.78);
+    background: rgba(0, 0, 0, 0.76);
     justify-content: center;
     align-items: center;
     z-index: 25;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+  }
+  .modal-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
   }
   .modal-box {
     background: linear-gradient(180deg, #3b2a1e, #241811);
     border: 2px solid #c89d54;
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 22px 26px;
     width: 92%;
     max-width: 420px;
     text-align: center;
     color: #f5e6c8;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.85);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.88);
+    transform: scale(0.92) translateY(8px);
+    transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .modal-overlay.is-open .modal-box {
+    transform: scale(1) translateY(0);
   }
   .modal-box h2 { color: #ffd27d; margin-bottom: 10px; font-size: 20px; }
-  .modal-box p { margin-bottom: 16px; font-size: 14px; line-height: 1.5; color: #ebd7b2; }
+  .modal-box p { margin-bottom: 16px; font-size: 14px; line-height: 1.5; color: #ebd7b2; white-space: pre-line; }
 
   .gmail-list {
     display: flex;
@@ -138,10 +202,11 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    transition: 0.15s;
+    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
   }
-  .gmail-account-item:hover {
-    background: rgba(255, 210, 125, 0.18);
+  .gmail-account-item:active {
+    transform: scale(0.97);
+    background: rgba(255, 210, 125, 0.22);
     border-color: #ffd27d;
   }
   .gmail-account-email { font-weight: 700; font-size: 14px; color: #ffd27d; }
@@ -161,6 +226,7 @@
     color: #fff3d6;
     font-size: 14px;
     outline: none;
+    user-select: text;
   }
 
   .modal-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
@@ -168,11 +234,16 @@
     background: linear-gradient(180deg, #2d8bc9, #1b5c8a);
     color: white;
     border: 1px solid #7cc7f7;
-    padding: 8px 20px;
-    border-radius: 6px;
+    padding: 9px 22px;
+    border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
     font-weight: 600;
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+  .modal-btn:active {
+    transform: scale(0.94);
+    filter: brightness(1.15);
   }
   .modal-btn-secondary {
     background: rgba(255,255,255,0.12);
@@ -185,10 +256,9 @@
 <div class="game-screen">
   <div class="account-status" id="accountStatus">ยังไม่ได้ล็อกอิน Gmail</div>
 
-  <!-- พื้นที่กดทับปุ่มจริงในภาพ -->
-  <button type="button" class="hotspot-gmail" onclick="openGmailLogin()" title="Sign in with Gmail"></button>
-  <button type="button" class="hotspot-start" onclick="handleStart()" title="START GAME"></button>
-  <button type="button" class="hotspot-server" onclick="showPopup('เลือกเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ปัจจุบัน: Arcadia (Asia) - สถานะ: ออนไลน์ปกติ')" title="Server Select"></button>
+  <button type="button" class="game-btn hotspot-gmail" data-action="gmail" aria-label="Sign in with Gmail"></button>
+  <button type="button" class="game-btn hotspot-start" data-action="start" aria-label="START GAME"></button>
+  <button type="button" class="game-btn hotspot-server" data-action="server" aria-label="Server Select"></button>
 
   <div class="modal-overlay" id="modal">
     <div class="modal-box" id="modalBox">
@@ -196,13 +266,77 @@
       <p id="modalText">รายละเอียด</p>
       <div id="modalExtra"></div>
       <div class="modal-actions" id="modalActions">
-        <button class="modal-btn" onclick="closePopup()">ตกลง</button>
+        <button type="button" class="modal-btn" onclick="closePopup()">ตกลง</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+  let audioCtx = null;
+
+  // สร้างเสียงคลิกนุ่มๆ แบบเกม RPG โดยไม่ต้องพึ่งไฟล์เสียงนอก
+  function playClickSound(pitch = 520) {
+    try {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(pitch, now);
+      osc.frequency.exponentialRampToValueAtTime(pitch * 0.55, now + 0.065);
+
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.075);
+    } catch (e) {}
+  }
+
+  // สร้างเอฟเฟกต์วงคลื่นแสงตรงตำแหน่งที่นิ้วแตะ + หน่วง 120ms ให้เห็นแอนิเมชันยุบปุ่มก่อนเด้งหน้าต่าง
+  document.querySelectorAll('.game-btn').forEach(btn => {
+    btn.addEventListener('pointerdown', (e) => {
+      btn.classList.add('is-pressed');
+      const rect = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      const size = Math.max(rect.width, rect.height);
+      ripple.className = 'touch-ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left) + 'px';
+      ripple.style.top = (e.clientY - rect.top) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 500);
+
+      const action = btn.dataset.action;
+      playClickSound(action === 'start' ? 660 : 480);
+    });
+
+    const release = () => btn.classList.remove('is-pressed');
+    btn.addEventListener('pointerup', release);
+    btn.addEventListener('pointerleave', release);
+    btn.addEventListener('pointercancel', release);
+
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      setTimeout(() => {
+        if (action === 'gmail') openGmailLogin();
+        else if (action === 'start') handleStart();
+        else if (action === 'server') {
+          showPopup('เลือกเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ปัจจุบัน: Arcadia (Asia)\nสถานะเซิร์ฟเวอร์: ออนไลน์ปกติ (Ping 18ms)');
+        }
+      }, 110);
+    });
+  });
+
   window.onload = () => {
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
@@ -210,11 +344,7 @@
 
   function updateAccountStatus(email) {
     const el = document.getElementById('accountStatus');
-    if (email) {
-      el.innerText = 'Gmail: ' + email;
-    } else {
-      el.innerText = 'ยังไม่ได้ล็อกอิน Gmail';
-    }
+    el.innerText = email ? 'Gmail: ' + email : 'ยังไม่ได้ล็อกอิน Gmail';
   }
 
   function handleStart() {
@@ -222,7 +352,7 @@
     if (!email) {
       showPopup(
         'กรุณาล็อกอินก่อนเริ่มเกม',
-        'โปรดกดที่ปุ่ม Sign in with Google / Login with Gmail เพื่อเลือกบัญชี Gmail ของคุณก่อนครับ',
+        'โปรดแตะที่ปุ่ม Sign in with Google / Login with Gmail เพื่อเลือกบัญชีของคุณก่อนเข้าสู่เกมครับ',
         '',
         `
           <button type="button" class="modal-btn" onclick="openGmailLogin()">ล็อกอิน Gmail</button>
@@ -279,24 +409,26 @@
   }
 
   function completeGmailLogin(email) {
+    playClickSound(720);
     localStorage.setItem('hunteria_gmail', email);
     updateAccountStatus(email);
     showPopup(
       'ล็อกอิน Gmail สำเร็จ',
-      'เชื่อมต่อบัญชี ' + email + ' เรียบร้อยแล้ว กด START GAME เพื่อเข้าสู่เกมได้เลยครับ'
+      'เชื่อมต่อบัญชี ' + email + ' เรียบร้อยแล้ว\nแตะ START GAME เพื่อเข้าสู่โลกอาร์คาเดียได้เลยครับ'
     );
   }
 
-  function showPopup(title, text, extraHtml = '', actionsHtml = `<button class="modal-btn" onclick="closePopup()">ตกลง</button>`) {
+  function showPopup(title, text, extraHtml = '', actionsHtml = `<button type="button" class="modal-btn" onclick="closePopup()">ตกลง</button>`) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalText').innerText = text;
     document.getElementById('modalExtra').innerHTML = extraHtml;
     document.getElementById('modalActions').innerHTML = actionsHtml;
-    document.getElementById('modal').style.display = 'flex';
+    document.getElementById('modal').classList.add('is-open');
   }
 
   function closePopup() {
-    document.getElementById('modal').style.display = 'none';
+    playClickSound(400);
+    document.getElementById('modal').classList.remove('is-open');
   }
 
   function escapeHtml(str) {
