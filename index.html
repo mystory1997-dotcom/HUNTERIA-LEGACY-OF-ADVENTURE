@@ -10,7 +10,6 @@
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, sans-serif;
-    /* ปิดกล่องไฮไลต์สีฟ้าเวลาแตะบนมือถือ */
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
@@ -30,12 +29,34 @@
     width: 100vw;
     max-width: 1280px;
     aspect-ratio: 16 / 9;
-    background: url('login.jpg') center/cover no-repeat;
-    box-shadow: 0 0 40px rgba(0,0,0,0.9);
+    background: #140f0c;
+    box-shadow: 0 0 40px rgba(0,0,0,0.95);
     overflow: hidden;
   }
 
-  /* คลาสพื้นฐานสำหรับปุ่มเกมที่สมูท */
+  /* เลเยอร์ฉาก (Login / Select) */
+  .scene {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.015);
+    transition: opacity 0.38s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s ease;
+  }
+  .scene.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    z-index: 2;
+  }
+
+  #sceneLogin { background-image: url('login.jpg'); }
+  #sceneSelect { background-image: url('select.jpg'); }
+
+  /* คลาสปุ่มสัมผัสสมูท */
   .game-btn {
     position: absolute;
     background: transparent;
@@ -47,14 +68,11 @@
     transition:
       transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.25s ease,
-      filter 0.25s ease;
+      filter 0.25s ease,
+      background 0.25s ease;
   }
-  .game-btn:focus,
-  .game-btn:focus-visible {
-    outline: none;
-  }
+  .game-btn:focus, .game-btn:focus-visible { outline: none; }
 
-  /* แสงเรืองนุ่มๆ เฉพาะบนอุปกรณ์ที่มีเมาส์ */
   @media (hover: hover) {
     .game-btn:hover {
       transform: scale(1.02);
@@ -62,54 +80,13 @@
     }
   }
 
-  /* จังหวะนิ้วแตะ/กดปุ่ม: ยุบตัวนุ่มๆ เหมือนปุ่มเกมจริง */
-  .game-btn:active,
-  .game-btn.is-pressed {
+  .game-btn:active, .game-btn.is-pressed {
     transform: scale(0.95);
     filter: brightness(1.22);
     transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* ปุ่ม Login with Gmail */
-  .hotspot-gmail {
-    left: 78.8%;
-    top: 31.8%;
-    width: 17.8%;
-    height: 13.8%;
-    border-radius: 12px;
-  }
-  .hotspot-gmail:active,
-  .hotspot-gmail.is-pressed {
-    box-shadow: inset 0 0 18px rgba(255, 214, 120, 0.45), 0 0 16px rgba(255, 195, 90, 0.35);
-  }
-
-  /* ปุ่ม START GAME */
-  .hotspot-start {
-    left: 79.6%;
-    top: 51.8%;
-    width: 16.2%;
-    height: 8.4%;
-    border-radius: 999px;
-  }
-  .hotspot-start:active,
-  .hotspot-start.is-pressed {
-    box-shadow: inset 0 0 20px rgba(120, 220, 255, 0.55), 0 0 20px rgba(72, 187, 255, 0.5);
-  }
-
-  /* ปุ่ม Server Select */
-  .hotspot-server {
-    left: 80.2%;
-    top: 62.2%;
-    width: 15.0%;
-    height: 7.5%;
-    border-radius: 10px;
-  }
-  .hotspot-server:active,
-  .hotspot-server.is-pressed {
-    box-shadow: inset 0 0 14px rgba(255, 225, 160, 0.3);
-  }
-
-  /* วงคลื่นแสงสีทองกระจายออกจากจุดที่นิ้วแตะ */
+  /* วงคลื่นแสงเมื่อแตะปุ่ม */
   .touch-ripple {
     position: absolute;
     border-radius: 50%;
@@ -118,18 +95,15 @@
     background: radial-gradient(circle, rgba(255, 236, 179, 0.65) 0%, rgba(255, 200, 100, 0.2) 55%, transparent 75%);
     animation: rippleAnim 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .hotspot-start .touch-ripple {
+  .blue-glow .touch-ripple {
     background: radial-gradient(circle, rgba(175, 238, 255, 0.75) 0%, rgba(80, 195, 255, 0.25) 55%, transparent 75%);
   }
 
   @keyframes rippleAnim {
-    to {
-      transform: translate(-50%, -50%) scale(2.6);
-      opacity: 0;
-    }
+    to { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
   }
 
-  /* ป้ายสถานะบัญชี */
+  /* ================= หน้าจอ LOGIN ================= */
   .account-status {
     position: absolute;
     left: 78.8%;
@@ -138,7 +112,7 @@
     text-align: center;
     font-size: clamp(9px, 0.9vw, 12px);
     color: #ffe29a;
-    background: rgba(20, 12, 8, 0.72);
+    background: rgba(20, 12, 8, 0.75);
     border: 1px solid rgba(212, 163, 89, 0.55);
     border-radius: 6px;
     padding: 3px 6px;
@@ -146,77 +120,229 @@
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
-    transition: opacity 0.25s ease;
   }
 
-  /* หน้าต่าง Modal แบบค่อยๆ เฟดและขยายนุ่มๆ */
+  .hotspot-gmail {
+    left: 78.8%; top: 31.8%; width: 17.8%; height: 13.8%; border-radius: 12px;
+  }
+  .hotspot-gmail:active, .hotspot-gmail.is-pressed {
+    box-shadow: inset 0 0 18px rgba(255, 214, 120, 0.45), 0 0 16px rgba(255, 195, 90, 0.35);
+  }
+
+  .hotspot-start {
+    left: 79.6%; top: 51.8%; width: 16.2%; height: 8.4%; border-radius: 999px;
+  }
+  .hotspot-start:active, .hotspot-start.is-pressed {
+    box-shadow: inset 0 0 20px rgba(120, 220, 255, 0.55), 0 0 20px rgba(72, 187, 255, 0.5);
+  }
+
+  .hotspot-server {
+    left: 80.2%; top: 62.2%; width: 15.0%; height: 7.5%; border-radius: 10px;
+  }
+
+  /* ================= หน้าจอ SELECT CHARACTER ================= */
+  .select-account-tag {
+    position: absolute;
+    left: 79.2%;
+    top: 26.6%;
+    width: 17.0%;
+    text-align: center;
+    font-size: clamp(8px, 0.85vw, 11px);
+    color: #ffd98e;
+    background: rgba(22, 14, 9, 0.78);
+    border: 1px solid rgba(200, 157, 84, 0.45);
+    border-radius: 5px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  /* แท่นยืน 4 ช่อง (ปกติไม่เรืองแสง จะเรืองแสงเฉพาะช่องที่กดเลือก) */
+  .pedestal-slot {
+    position: absolute;
+    top: 45%;
+    width: 13.5%;
+    height: 41%;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pedestal-slot:active { transform: scale(0.96); }
+
+  /* ตำแหน่ง 4 แท่นตรงกับภาพ select.jpg */
+  .slot-0 { left: 12.0%; }
+  .slot-1 { left: 28.0%; }
+  .slot-2 { left: 43.6%; }
+  .slot-3 { left: 58.6%; }
+
+  /* วงแหวนรูนเรืองแสง (ซ่อนไว้ก่อน ปรากฏเฉพาะตอนเลือกแท่นนั้น) */
+  .slot-rune {
+    margin-top: 12%;
+    width: 58%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 215, 110, 0.85);
+    box-shadow: 0 0 18px rgba(255, 200, 80, 0.75), inset 0 0 14px rgba(255, 220, 130, 0.55);
+    background: radial-gradient(circle, rgba(255, 226, 145, 0.28) 0%, transparent 72%);
+    opacity: 0;
+    transform: scale(0.75);
+    transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pedestal-slot.is-selected .slot-rune {
+    opacity: 1;
+    transform: scale(1);
+    animation: pulseRune 2s infinite ease-in-out;
+  }
+
+  @keyframes pulseRune {
+    0%, 100% { box-shadow: 0 0 16px rgba(255, 200, 80, 0.7), inset 0 0 12px rgba(255, 220, 130, 0.45); }
+    50% { box-shadow: 0 0 26px rgba(255, 220, 120, 0.95), inset 0 0 18px rgba(255, 240, 180, 0.7); }
+  }
+
+  /* ป้ายชื่อตัวละครถ้าช่องนั้นถูกสร้างแล้ว */
+  .slot-char-badge {
+    margin-top: 8%;
+    background: rgba(24, 15, 10, 0.88);
+    border: 1px solid #d4a359;
+    border-radius: 8px;
+    padding: 4px 8px;
+    text-align: center;
+    color: #fff2d6;
+    font-size: clamp(9px, 0.95vw, 13px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+    pointer-events: none;
+  }
+  .slot-char-badge strong { display: block; color: #ffd27d; }
+  .slot-char-badge span { font-size: 0.85em; color: #cbb58e; }
+
+  /* ป้ายข้อมูลช่องที่เลือกทับบนกรอบขวา */
+  .panel-slot-info {
+    position: absolute;
+    left: 79.4%;
+    top: 32.0%;
+    width: 16.6%;
+    height: 17.5%;
+    background: linear-gradient(180deg, #e7d4b5, #d5be98);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6px;
+    pointer-events: none;
+    box-shadow: inset 0 0 10px rgba(92, 64, 34, 0.35);
+  }
+  .panel-slot-title {
+    font-weight: 800;
+    font-size: clamp(11px, 1.35vw, 18px);
+    color: #5b4328;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .panel-slot-desc {
+    font-size: clamp(9px, 0.95vw, 13px);
+    color: #3d2b18;
+    line-height: 1.3;
+  }
+
+  /* ปุ่ม CREATE CHARACTER / ENTER GAME ด้านขวา */
+  .hotspot-create {
+    left: 79.4%;
+    top: 51.6%;
+    width: 16.6%;
+    height: 8.6%;
+    border-radius: 999px;
+  }
+  .hotspot-create:active, .hotspot-create.is-pressed {
+    box-shadow: inset 0 0 20px rgba(120, 220, 255, 0.55), 0 0 20px rgba(72, 187, 255, 0.5);
+  }
+
+  /* ปุ่ม BACK มุมซ้ายล่าง */
+  .hotspot-back {
+    left: 4.5%;
+    top: 88.2%;
+    width: 11.4%;
+    height: 6.2%;
+    border-radius: 999px;
+  }
+  .hotspot-back:active, .hotspot-back.is-pressed {
+    box-shadow: inset 0 0 14px rgba(255, 214, 120, 0.45);
+  }
+
+  /* ================= MODAL ================= */
   .modal-overlay {
     display: flex;
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.76);
+    background: rgba(0, 0, 0, 0.78);
     justify-content: center;
     align-items: center;
-    z-index: 25;
+    z-index: 30;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.22s ease, visibility 0.22s ease;
   }
-  .modal-overlay.is-open {
-    opacity: 1;
-    visibility: visible;
-  }
+  .modal-overlay.is-open { opacity: 1; visibility: visible; }
   .modal-box {
     background: linear-gradient(180deg, #3b2a1e, #241811);
     border: 2px solid #c89d54;
     border-radius: 14px;
-    padding: 22px 26px;
+    padding: 20px 24px;
     width: 92%;
-    max-width: 420px;
+    max-width: 430px;
     text-align: center;
     color: #f5e6c8;
     box-shadow: 0 14px 36px rgba(0,0,0,0.88);
     transform: scale(0.92) translateY(8px);
     transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .modal-overlay.is-open .modal-box {
-    transform: scale(1) translateY(0);
-  }
-  .modal-box h2 { color: #ffd27d; margin-bottom: 10px; font-size: 20px; }
-  .modal-box p { margin-bottom: 16px; font-size: 14px; line-height: 1.5; color: #ebd7b2; white-space: pre-line; }
+  .modal-overlay.is-open .modal-box { transform: scale(1) translateY(0); }
+  .modal-box h2 { color: #ffd27d; margin-bottom: 8px; font-size: 19px; }
+  .modal-box p { margin-bottom: 14px; font-size: 13.5px; line-height: 1.45; color: #ebd7b2; white-space: pre-line; }
 
-  .gmail-list {
+  .gmail-list, .race-grid {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 14px;
     text-align: left;
   }
-  .gmail-account-item {
+  .race-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .gmail-account-item, .race-card {
     background: rgba(255, 243, 214, 0.08);
     border: 1px solid rgba(200, 157, 84, 0.5);
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 9px 11px;
     color: #fff3d6;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+    transition: 0.15s;
   }
-  .gmail-account-item:active {
-    transform: scale(0.97);
-    background: rgba(255, 210, 125, 0.22);
+  .race-card.active {
+    background: rgba(255, 210, 125, 0.24);
     border-color: #ffd27d;
+    box-shadow: 0 0 10px rgba(255, 210, 125, 0.3);
   }
-  .gmail-account-email { font-weight: 700; font-size: 14px; color: #ffd27d; }
-  .gmail-account-sub { font-size: 12px; color: #d8c39e; }
+  .gmail-account-email, .race-card strong { display: block; font-weight: 700; font-size: 13.5px; color: #ffd27d; }
+  .gmail-account-sub, .race-card span { font-size: 11.5px; color: #d8c39e; }
 
-  .gmail-custom-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
+  .gmail-custom-row { display: flex; gap: 8px; margin-bottom: 14px; }
   .gmail-custom-input {
     flex: 1;
     padding: 8px 10px;
@@ -234,17 +360,13 @@
     background: linear-gradient(180deg, #2d8bc9, #1b5c8a);
     color: white;
     border: 1px solid #7cc7f7;
-    padding: 9px 22px;
+    padding: 8px 20px;
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
     font-weight: 600;
-    transition: transform 0.15s ease, filter 0.15s ease;
   }
-  .modal-btn:active {
-    transform: scale(0.94);
-    filter: brightness(1.15);
-  }
+  .modal-btn:active { transform: scale(0.95); }
   .modal-btn-secondary {
     background: rgba(255,255,255,0.12);
     border: 1px solid #9e845c;
@@ -254,14 +376,50 @@
 <body>
 
 <div class="game-screen">
-  <div class="account-status" id="accountStatus">ยังไม่ได้ล็อกอิน Gmail</div>
 
-  <button type="button" class="game-btn hotspot-gmail" data-action="gmail" aria-label="Sign in with Gmail"></button>
-  <button type="button" class="game-btn hotspot-start" data-action="start" aria-label="START GAME"></button>
-  <button type="button" class="game-btn hotspot-server" data-action="server" aria-label="Server Select"></button>
+  <!-- ฉากที่ 1: หน้าจอ LOGIN -->
+  <div class="scene is-active" id="sceneLogin">
+    <div class="account-status" id="accountStatus">ยังไม่ได้ล็อกอิน Gmail</div>
+    <button type="button" class="game-btn hotspot-gmail" data-action="gmail" aria-label="Sign in with Gmail"></button>
+    <button type="button" class="game-btn blue-glow hotspot-start" data-action="start" aria-label="START GAME"></button>
+    <button type="button" class="game-btn hotspot-server" data-action="server" aria-label="Server Select"></button>
+  </div>
 
+  <!-- ฉากที่ 2: หน้าจอ SELECT CHARACTER (4 ช่องว่าง) -->
+  <div class="scene" id="sceneSelect">
+    <div class="select-account-tag" id="selectAccountTag">Gmail: -</div>
+
+    <!-- แท่นยืน 4 ช่อง (กดเลือกถึงจะเรืองแสง) -->
+    <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
+      <div class="slot-rune"></div>
+      <div id="slotBadge0"></div>
+    </div>
+    <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
+      <div class="slot-rune"></div>
+      <div id="slotBadge1"></div>
+    </div>
+    <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
+      <div class="slot-rune"></div>
+      <div id="slotBadge2"></div>
+    </div>
+    <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
+      <div class="slot-rune"></div>
+      <div id="slotBadge3"></div>
+    </div>
+
+    <!-- กล่องแสดงสถานะช่องที่เลือกบนแผงขวา -->
+    <div class="panel-slot-info">
+      <div class="panel-slot-title" id="panelSlotTitle">EMPTY SLOT</div>
+      <div class="panel-slot-desc" id="panelSlotDesc">แตะเลือกแท่นยืนเพื่อสร้างหรือเลือกตัวละคร</div>
+    </div>
+
+    <button type="button" class="game-btn blue-glow hotspot-create" data-action="createOrEnter" aria-label="CREATE CHARACTER"></button>
+    <button type="button" class="game-btn hotspot-back" data-action="backToLogin" aria-label="BACK"></button>
+  </div>
+
+  <!-- กล่องแจ้งเตือน / ล็อกอิน / สร้างตัวละคร -->
   <div class="modal-overlay" id="modal">
-    <div class="modal-box" id="modalBox">
+    <div class="modal-box">
       <h2 id="modalTitle">แจ้งเตือน</h2>
       <p id="modalText">รายละเอียด</p>
       <div id="modalExtra"></div>
@@ -270,12 +428,15 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <script>
   let audioCtx = null;
+  let selectedSlot = null;
+  let selectedRace = 'มนุษย์';
+  let characters = [null, null, null, null];
 
-  // สร้างเสียงคลิกนุ่มๆ แบบเกม RPG โดยไม่ต้องพึ่งไฟล์เสียงนอก
   function playClickSound(pitch = 520) {
     try {
       if (!audioCtx) {
@@ -302,7 +463,7 @@
     } catch (e) {}
   }
 
-  // สร้างเอฟเฟกต์วงคลื่นแสงตรงตำแหน่งที่นิ้วแตะ + หน่วง 120ms ให้เห็นแอนิเมชันยุบปุ่มก่อนเด้งหน้าต่าง
+  // ติดตั้งเอฟเฟกต์สัมผัสสมูทให้ทุกปุ่ม
   document.querySelectorAll('.game-btn').forEach(btn => {
     btn.addEventListener('pointerdown', (e) => {
       btn.classList.add('is-pressed');
@@ -317,7 +478,7 @@
       setTimeout(() => ripple.remove(), 500);
 
       const action = btn.dataset.action;
-      playClickSound(action === 'start' ? 660 : 480);
+      playClickSound(action === 'start' || action === 'createOrEnter' ? 660 : 480);
     });
 
     const release = () => btn.classList.remove('is-pressed');
@@ -333,6 +494,8 @@
         else if (action === 'server') {
           showPopup('เลือกเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ปัจจุบัน: Arcadia (Asia)\nสถานะเซิร์ฟเวอร์: ออนไลน์ปกติ (Ping 18ms)');
         }
+        else if (action === 'createOrEnter') handleCreateOrEnter();
+        else if (action === 'backToLogin') switchScene('sceneLogin');
       }, 110);
     });
   });
@@ -340,11 +503,22 @@
   window.onload = () => {
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
+    loadCharacters();
   };
 
+  function switchScene(sceneId) {
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('is-active'));
+    document.getElementById(sceneId).classList.add('is-active');
+
+    if (sceneId === 'sceneSelect') {
+      selectedSlot = null;
+      renderSlots();
+    }
+  }
+
   function updateAccountStatus(email) {
-    const el = document.getElementById('accountStatus');
-    el.innerText = email ? 'Gmail: ' + email : 'ยังไม่ได้ล็อกอิน Gmail';
+    document.getElementById('accountStatus').innerText = email ? 'Gmail: ' + email : 'ยังไม่ได้ล็อกอิน Gmail';
+    document.getElementById('selectAccountTag').innerText = email ? email : 'Guest';
   }
 
   function handleStart() {
@@ -361,11 +535,151 @@
       );
       return;
     }
+    loadCharacters();
+    switchScene('sceneSelect');
+  }
+
+  function getStorageKey() {
+    const email = localStorage.getItem('hunteria_gmail') || 'default';
+    return 'hunteria_chars_' + email;
+  }
+
+  function loadCharacters() {
+    try {
+      const raw = localStorage.getItem(getStorageKey());
+      characters = raw ? JSON.parse(raw) : [null, null, null, null];
+      if (!Array.isArray(characters) || characters.length !== 4) characters = [null, null, null, null];
+    } catch (e) {
+      characters = [null, null, null, null];
+    }
+    renderSlots();
+  }
+
+  function saveCharacters() {
+    localStorage.setItem(getStorageKey(), JSON.stringify(characters));
+  }
+
+  function selectSlot(idx) {
+    playClickSound(580);
+    selectedSlot = idx;
+    renderSlots();
+  }
+
+  function renderSlots() {
+    for (let i = 0; i < 4; i++) {
+      const slotEl = document.querySelector('.slot-' + i);
+      const badgeEl = document.getElementById('slotBadge' + i);
+      if (selectedSlot === i) slotEl.classList.add('is-selected');
+      else slotEl.classList.remove('is-selected');
+
+      const char = characters[i];
+      if (char) {
+        badgeEl.innerHTML = `<div class="slot-char-badge"><strong>${escapeHtml(char.name)}</strong><span>เผ่า${escapeHtml(char.race)} Lv.1</span></div>`;
+      } else {
+        badgeEl.innerHTML = '';
+      }
+    }
+
+    const titleEl = document.getElementById('panelSlotTitle');
+    const descEl = document.getElementById('panelSlotDesc');
+
+    if (selectedSlot === null) {
+      titleEl.innerText = 'EMPTY SLOT';
+      descEl.innerText = 'แตะเลือกแท่นยืนเพื่อสร้างหรือเลือกตัวละคร';
+    } else {
+      const char = characters[selectedSlot];
+      if (char) {
+        titleEl.innerText = char.name;
+        descEl.innerText = `ช่องที่ ${selectedSlot + 1} | เผ่า${char.race} (Lv.1)\nแตะ CREATE CHARACTER เพื่อเข้าสู่เกม`;
+      } else {
+        titleEl.innerText = `SLOT ${selectedSlot + 1} - ว่าง`;
+        descEl.innerText = 'พร้อมสร้างนักล่าคนใหม่\nแตะปุ่ม CREATE CHARACTER ด้านล่าง';
+      }
+    }
+  }
+
+  function handleCreateOrEnter() {
+    if (selectedSlot === null) {
+      showPopup('ยังไม่ได้เลือกแท่นยืน', 'โปรดแตะเลือกแท่นยืนช่องใดช่องหนึ่ง (ช่อง 1 - 4) ก่อนครับ');
+      return;
+    }
+
+    const existing = characters[selectedSlot];
+    if (existing) {
+      showPopup(
+        'เข้าสู่โลก HUNTERIA',
+        `กำลังพา "${existing.name}" (เผ่า${existing.race} Lv.1) ลงสู่หลุมดันเจี้ยนอาร์คาเดีย!\n(พร้อมพัฒนาฉากสร้างตัวละครละเอียดและฉากเล่นในขั้นถัดไป)`,
+        '',
+        `
+          <button type="button" class="modal-btn" onclick="closePopup()">ตกลง</button>
+          <button type="button" class="modal-btn modal-btn-secondary" onclick="deleteCharacter(${selectedSlot})">ลบตัวละคร</button>
+        `
+      );
+      return;
+    }
+
+    selectedRace = 'มนุษย์';
+    const extraHtml = `
+      <div class="gmail-custom-row">
+        <input type="text" id="newCharName" class="gmail-custom-input" maxlength="14" placeholder="ตั้งชื่อตัวละคร (สูงสุด 14 ตัว)...">
+      </div>
+      <div class="race-grid" id="raceGrid">
+        <div class="race-card active" onclick="pickRace(this, 'มนุษย์')">
+          <strong>มนุษย์ (Human)</strong>
+          <span>สมดุลทุกด้าน ปรับตัวไว</span>
+        </div>
+        <div class="race-card" onclick="pickRace(this, 'ปิศาจ')">
+          <strong>ปิศาจ (Demon)</strong>
+          <span>พลังโจมตีเวทและกายภาพสูง</span>
+        </div>
+        <div class="race-card" onclick="pickRace(this, 'เอลฟ์')">
+          <strong>เอลฟ์ (Elf)</strong>
+          <span>แม่นยำ ว่องไว พลังธาตุสูง</span>
+        </div>
+        <div class="race-card" onclick="pickRace(this, 'คนแคระ')">
+          <strong>คนแคระ (Dwarf)</strong>
+          <span>พลังป้องกันแกร่ง อึดทนทาน</span>
+        </div>
+      </div>
+    `;
 
     showPopup(
-      'เข้าสู่โลกอาร์คาเดีย',
-      'บัญชี: ' + email + '\nเซิร์ฟเวอร์: Arcadia (Asia)\nพร้อมเข้าสู่หน้าเลือกตัวละคร!'
+      `สร้างตัวละครใหม่ (ช่องที่ ${selectedSlot + 1})`,
+      'ตั้งชื่อและเลือกเผ่าพันธุ์เริ่มต้นของคุณ',
+      extraHtml,
+      `
+        <button type="button" class="modal-btn" onclick="confirmCreateCharacter()">ยืนยันสร้างตัวละคร</button>
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closePopup()">ยกเลิก</button>
+      `
     );
+  }
+
+  function pickRace(el, raceName) {
+    playClickSound(600);
+    selectedRace = raceName;
+    document.querySelectorAll('.race-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function confirmCreateCharacter() {
+    const input = document.getElementById('newCharName');
+    const name = input ? input.value.trim() : '';
+    if (!name) {
+      alert('กรุณาตั้งชื่อตัวละครก่อนครับ');
+      return;
+    }
+    characters[selectedSlot] = { name: name, race: selectedRace, level: 1 };
+    saveCharacters();
+    renderSlots();
+    playClickSound(760);
+    showPopup('สร้างตัวละครสำเร็จ!', `นักล่า "${name}" (เผ่า${selectedRace}) ประจำการที่แท่นที่ ${selectedSlot + 1} เรียบร้อยแล้ว`);
+  }
+
+  function deleteCharacter(idx) {
+    characters[idx] = null;
+    saveCharacters();
+    renderSlots();
+    closePopup();
   }
 
   function openGmailLogin() {
@@ -414,7 +728,7 @@
     updateAccountStatus(email);
     showPopup(
       'ล็อกอิน Gmail สำเร็จ',
-      'เชื่อมต่อบัญชี ' + email + ' เรียบร้อยแล้ว\nแตะ START GAME เพื่อเข้าสู่โลกอาร์คาเดียได้เลยครับ'
+      'เชื่อมต่อบัญชี ' + email + ' เรียบร้อยแล้ว\nแตะ START GAME เพื่อเข้าสู่หน้าเลือกตัวละครได้เลยครับ'
     );
   }
 
