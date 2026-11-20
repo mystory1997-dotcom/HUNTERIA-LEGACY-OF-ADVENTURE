@@ -55,7 +55,7 @@
   #sceneLogin { background-image: url('login.jpg'); }
   #sceneSelect { background-image: url('select.jpg'); }
   #sceneCreate { background-image: url('create.jpg'); }
-  #sceneWorld { background: #1d140e; }
+  #sceneWorld { background: #140d08; }
 
   .game-btn {
     position: absolute;
@@ -389,7 +389,6 @@
   }
   .world-btn-exit:active { transform: scale(0.95); }
 
-  /* จอยปุ่มเดิน D-Pad สำหรับแตะบนมือถือ */
   .dpad-container {
     position: absolute;
     left: 3.5%;
@@ -424,18 +423,26 @@
   .dpad-right { grid-column: 3; grid-row: 2; }
   .dpad-down  { grid-column: 2; grid-row: 3; }
 
-  .world-hint {
+  .action-pad {
     position: absolute;
-    right: 3.2%;
-    bottom: 4.5%;
-    background: rgba(22, 14, 9, 0.78);
-    border: 1px solid rgba(200, 157, 84, 0.45);
-    border-radius: 8px;
-    padding: 5px 12px;
-    color: #d8c39e;
-    font-size: clamp(8.5px, 0.9vw, 12px);
-    pointer-events: none;
+    right: 3.5%;
+    bottom: 6.5%;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
   }
+  .atk-btn {
+    background: linear-gradient(180deg, rgba(68, 42, 24, 0.88), rgba(34, 20, 11, 0.92));
+    border: 1.5px solid #d4a359;
+    border-radius: 10px;
+    padding: 9px 14px;
+    color: #ffd982;
+    font-size: clamp(10px, 1.05vw, 13px);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.65);
+  }
+  .atk-btn:active { transform: scale(0.94); filter: brightness(1.2); }
 
   /* ================= MODAL ================= */
   .modal-overlay {
@@ -608,7 +615,10 @@
       <button type="button" class="dpad-btn dpad-down" data-dir="down">▼</button>
     </div>
 
-    <div class="world-hint">ใช้ปุ่มทิศทางซ้ายล่าง หรือปุ่ม WASD / ลูกศร เพื่อเดินสำรวจบ้าน</div>
+    <div class="action-pad">
+      <button type="button" class="atk-btn" onclick="triggerAttack('melee')">โจมตีใกล้ (J)</button>
+      <button type="button" class="atk-btn" onclick="triggerAttack('ranged')">โจมตีไกล (K)</button>
+    </div>
   </div>
 
   <!-- Modal -->
@@ -653,53 +663,87 @@
     auraIdx: 0
   };
 
-  // ================= โหลดและตัดพื้นหลังเขียวของ Sprite Sheet =================
-  let humanMaleSheet = null;
-  let sheetReady = false;
-  const TOTAL_SHEET_COLS = 9; // 0..5 = ท่าเดิน 6 เฟรม, 6..8 = ท่าโจมตี 3 เฟรม
+  // ================= โหลดไฟล์ภาพจาก GitHub =================
+  let homeMapImg = null;
+  let homeMapReady = false;
 
-  function initSpriteSheet() {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      try {
-        const w = img.naturalWidth;
-        const h = img.naturalHeight;
-        const c = document.createElement('canvas');
-        c.width = w;
-        c.height = h;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
+  let previewImg = null;
+  let previewReady = false;
 
-        const imgData = ctx.getImageData(0, 0, w, h);
-        const d = imgData.data;
-        for (let i = 0; i < d.length; i += 4) {
-          const r = d[i], g = d[i + 1], b = d[i + 2];
-          if (g > 130 && g > r * 1.22 && g > b * 1.22) {
-            d[i + 3] = 0;
-          } else if (g > 105 && g > r * 1.12 && g > b * 1.12) {
-            d[i + 1] = Math.min(r, b);
-            d[i + 3] = 75;
-          }
+  const sheets = {
+    walk:   { img: null, ready: false, cols: 6, file: 'human_m_walk.jpg' },
+    melee:  { img: null, ready: false, cols: 4, file: 'human_m_atk_melee.jpg' },
+    ranged: { img: null, ready: false, cols: 4, file: 'human_m_atk_ranged.jpg' }
+  };
+
+  function keyGreenToAlpha(img) {
+    try {
+      const w = img.naturalWidth;
+      const h = img.naturalHeight;
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        if (g > 130 && g > r * 1.22 && g > b * 1.22) {
+          d[i + 3] = 0;
+        } else if (g > 105 && g > r * 1.12 && g > b * 1.12) {
+          d[i + 1] = Math.min(r, b);
+          d[i + 3] = 75;
         }
-        ctx.putImageData(imgData, 0, 0);
-        humanMaleSheet = c;
-        sheetReady = true;
-      } catch (e) {
-        humanMaleSheet = img;
-        sheetReady = true;
       }
+      ctx.putImageData(imgData, 0, 0);
+      return c;
+    } catch (e) {
+      return img;
+    }
+  }
+
+  function initAssets() {
+    const mapBg = new Image();
+    mapBg.onload = () => {
+      homeMapImg = mapBg;
+      homeMapReady = true;
+    };
+    mapBg.onerror = () => {
+      homeMapReady = false;
+    };
+    mapBg.src = 'home_map.jpg';
+
+    const prev = new Image();
+    prev.crossOrigin = 'anonymous';
+    prev.onload = () => {
+      previewImg = keyGreenToAlpha(prev);
+      previewReady = true;
       renderCreatorPreview();
       renderSlots();
     };
-    img.onerror = () => {
-      sheetReady = false;
-      renderCreatorPreview();
+    prev.onerror = () => {
+      previewReady = false;
     };
-    img.src = 'human_m_sheet.jpg';
+    prev.src = 'human_m_preview.jpg';
+
+    Object.keys(sheets).forEach((key) => {
+      const entry = sheets[key];
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        entry.img = keyGreenToAlpha(img);
+        entry.ready = true;
+      };
+      img.onerror = () => {
+        entry.ready = false;
+      };
+      img.src = entry.file;
+    });
   }
 
-  // วาดเฟรมเดี่ยวจาก Sprite Sheet ลงบนแคนวาสตัวอย่าง (ใช้เฟรมที่ 0 เป็นท่ายืน)
+  // วาดตัวละครเต็มตัวจาก human_m_preview.jpg บนหน้าสร้างตัวละครและแท่นยืน
   function drawPreviewFrame(canvas, cfg) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -709,32 +753,25 @@
 
     const aura = AURAS[(cfg.auraIdx || 0) % AURAS.length];
 
-    if (!sheetReady || !humanMaleSheet) {
+    if (!previewReady || !previewImg) {
       ctx.fillStyle = 'rgba(255, 224, 150, 0.85)';
       ctx.font = 'bold 13px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Loading Sprite...', cw / 2, ch / 2);
+      ctx.fillText('Loading Character...', cw / 2, ch / 2);
       return;
     }
-
-    const fw = humanMaleSheet.width / TOTAL_SHEET_COLS;
-    const fh = humanMaleSheet.height;
-    // แถวตัวละครอยู่ช่วงกึ่งกลางแนวตั้งของภาพ 1:1 (sy ~ 0.30*fh ถึง 0.70*fh)
-    const sy = fh * 0.32;
-    const sh = fh * 0.36;
 
     ctx.save();
     ctx.shadowColor = aura.glow;
     ctx.shadowBlur = 14;
     ctx.drawImage(
-      humanMaleSheet,
-      0, sy, fw, sh,
-      cw * 0.14, ch * 0.08, cw * 0.72, ch * 0.84
+      previewImg,
+      0, 0, previewImg.width, previewImg.height,
+      cw * 0.08, ch * 0.04, cw * 0.84, ch * 0.92
     );
     ctx.restore();
   }
 
-  // ================= เสียงและปุ่มกด UI =================
   function playClickSound(pitch = 520) {
     try {
       if (!audioCtx) {
@@ -797,7 +834,7 @@
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
     loadCharacters();
-    initSpriteSheet();
+    initAssets();
     setupWorldControls();
   };
 
@@ -980,7 +1017,6 @@
     saveCharacters();
     playClickSound(760);
 
-    // เมื่อสร้างตัวละครเสร็จ เข้าไปโผล่ในแมพบ้านตัวเองทันที
     enterHomeMap(newChar);
   }
 
@@ -990,10 +1026,11 @@
 
   const player = {
     x: 640,
-    y: 460,
+    y: 520,
     speed: 230,
-    facing: 1,       // 1 = หันขวา, -1 = หันซ้าย
-    walkFrame: 0,    // ใช้เฟรม 0..5 จาก human_m_sheet.jpg
+    facing: 1,
+    mode: 'idle',    // 'idle' | 'walk' | 'melee' | 'ranged'
+    frame: 0,
     frameTimer: 0,
     isMoving: false,
     idleBob: 0
@@ -1010,11 +1047,11 @@
     document.getElementById('worldHudMp').innerText = `MP: ${charData.mp}/${charData.mp}`;
     document.getElementById('worldHudSt').innerText = `ST: ${charData.st}/${charData.st}`;
 
-    // จุดเกิดกลางห้องหน้าพรมในบ้านตัวเอง
     player.x = 640;
-    player.y = 465;
+    player.y = 520;
     player.facing = 1;
-    player.walkFrame = 0;
+    player.mode = 'idle';
+    player.frame = 0;
     player.isMoving = false;
 
     switchScene('sceneWorld');
@@ -1025,14 +1062,23 @@
     switchScene('sceneSelect');
   }
 
+  function triggerAttack(type) {
+    if (player.mode === 'melee' || player.mode === 'ranged') return;
+    playClickSound(type === 'melee' ? 680 : 820);
+    player.mode = type;
+    player.frame = 0;
+    player.frameTimer = 0;
+  }
+
   function setupWorldControls() {
-    // คีย์บอร์ด WASD และปุ่มลูกศร
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
       if (k === 'w' || k === 'arrowup') moveInput.up = true;
       if (k === 's' || k === 'arrowdown') moveInput.down = true;
       if (k === 'a' || k === 'arrowleft') moveInput.left = true;
       if (k === 'd' || k === 'arrowright') moveInput.right = true;
+      if (k === 'j') triggerAttack('melee');
+      if (k === 'k') triggerAttack('ranged');
     });
     window.addEventListener('keyup', (e) => {
       const k = e.key.toLowerCase();
@@ -1042,7 +1088,6 @@
       if (k === 'd' || k === 'arrowright') moveInput.right = false;
     });
 
-    // จอยทิศทางบนหน้าจอสำหรับมือถือ
     document.querySelectorAll('.dpad-btn').forEach(btn => {
       const dir = btn.dataset.dir;
       const press = (e) => {
@@ -1097,35 +1142,39 @@
     if (player.isMoving) {
       vx /= len;
       vy /= len;
-
-      let nextX = player.x + vx * player.speed * dt;
-      let nextY = player.y + vy * player.speed * dt;
-
-      // ขอบเขตพื้นห้องในบ้านตัวเอง
-      nextX = Math.max(195, Math.min(1085, nextX));
-      nextY = Math.max(325, Math.min(625, nextY));
-
-      // กันชนเฟอร์นิเจอร์ในห้อง (เตียงซ้ายบน, หีบขวาบน)
-      const hitBed = (nextX < 395 && nextY < 430);
-      const hitChest = (nextX > 905 && nextY < 410);
-      if (!hitBed && !hitChest) {
-        player.x = nextX;
-        player.y = nextY;
-      }
-
+      player.x = Math.max(140, Math.min(1140, player.x + vx * player.speed * dt));
+      player.y = Math.max(410, Math.min(665, player.y + vy * player.speed * dt));
       if (Math.abs(vx) > 0.05) {
         player.facing = vx < 0 ? -1 : 1;
       }
+    }
 
-      // เล่นแอนิเมชันเดิน 6 เฟรม (0..5)
+    if (player.mode === 'melee' || player.mode === 'ranged') {
+      const atkSheet = sheets[player.mode];
+      const totalFrames = atkSheet.cols || 4;
       player.frameTimer += dt;
-      if (player.frameTimer >= 0.095) {
+      if (player.frameTimer >= 0.09) {
         player.frameTimer = 0;
-        player.walkFrame = (player.walkFrame + 1) % 6;
+        player.frame++;
+        if (player.frame >= totalFrames) {
+          player.mode = player.isMoving ? 'walk' : 'idle';
+          player.frame = 0;
+        }
+      }
+      return;
+    }
+
+    if (player.isMoving) {
+      player.mode = 'walk';
+      player.frameTimer += dt;
+      if (player.frameTimer >= 0.09) {
+        player.frameTimer = 0;
+        player.frame = (player.frame + 1) % 6;
       }
       player.idleBob = 0;
     } else {
-      player.walkFrame = 0;
+      player.mode = 'idle';
+      player.frame = 0;
       player.frameTimer = 0;
       player.idleBob += dt * 3;
     }
@@ -1140,148 +1189,31 @@
 
     ctx.clearRect(0, 0, W, H);
 
-    // 1. ผนังไม้ห้องบ้านตัวเอง
-    const wallGrad = ctx.createLinearGradient(0, 80, 0, 310);
-    wallGrad.addColorStop(0, '#3a2416');
-    wallGrad.addColorStop(1, '#583822');
-    ctx.fillStyle = wallGrad;
-    ctx.fillRect(140, 90, 1000, 220);
-
-    // คานไม้ประดับผนัง
-    ctx.fillStyle = '#2b190e';
-    for (let x = 140; x <= 1140; x += 200) {
-      ctx.fillRect(x - 10, 90, 20, 220);
-    }
-    ctx.fillRect(140, 90, 1000, 22);
-    ctx.fillRect(140, 296, 1000, 16);
-
-    // หน้าต่างแสงแดดส่องเข้ามา
-    drawWindow(ctx, 410, 145);
-    drawWindow(ctx, 810, 145);
-
-    // เตาผิงกลางผนัง
-    drawFireplace(ctx, 640, 210);
-
-    // 2. พื้นไม้กระดาน
-    const floorGrad = ctx.createLinearGradient(0, 310, 0, 660);
-    floorGrad.addColorStop(0, '#7c5032');
-    floorGrad.addColorStop(1, '#5c3921');
-    ctx.fillStyle = floorGrad;
-    ctx.fillRect(140, 310, 1000, 345);
-
-    // เส้นร่องแผ่นไม้พื้น
-    ctx.strokeStyle = 'rgba(35, 19, 9, 0.35)';
-    ctx.lineWidth = 2;
-    for (let y = 345; y < 655; y += 36) {
-      ctx.beginPath();
-      ctx.moveTo(140, y);
-      ctx.lineTo(1140, y);
-      ctx.stroke();
+    if (homeMapReady && homeMapImg) {
+      ctx.drawImage(homeMapImg, 0, 0, W, H);
+    } else {
+      ctx.fillStyle = '#3b2416';
+      ctx.fillRect(0, 0, W, H);
     }
 
-    // กรอบกำแพงรอบห้อง
-    ctx.strokeStyle = '#24140a';
-    ctx.lineWidth = 14;
-    ctx.strokeRect(140, 90, 1000, 565);
-
-    // พรมวงรีกลางห้อง
-    ctx.save();
-    ctx.fillStyle = '#7e2626';
-    ctx.beginPath();
-    ctx.ellipse(640, 475, 190, 82, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#d4a359';
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.restore();
-
-    // ประตูทางออกด้านล่าง
-    ctx.fillStyle = '#3b2212';
-    ctx.fillRect(585, 636, 110, 22);
-    ctx.fillStyle = '#ffd982';
-    ctx.font = 'bold 13px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('ทางออกสู่เมืองอาร์คาเดีย', 640, 678);
-
-    // 3. เฟอร์นิเจอร์: เตียงนอนมุมซ้ายบน & หีบเก็บของมุมขวาบน
-    drawBed(ctx, 185, 295);
-    drawStorageChest(ctx, 945, 315);
-
-    // 4. วาดตัวละครผู้เล่น
     drawWorldPlayer(ctx);
-  }
-
-  function drawWindow(ctx, x, y) {
-    ctx.fillStyle = '#8fd3ff';
-    ctx.fillRect(x - 42, y, 84, 88);
-    ctx.strokeStyle = '#2b190e';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(x - 42, y, 84, 88);
-    ctx.beginPath();
-    ctx.moveTo(x, y); ctx.lineTo(x, y + 88);
-    ctx.moveTo(x - 42, y + 44); ctx.lineTo(x + 42, y + 44);
-    ctx.stroke();
-  }
-
-  function drawFireplace(ctx, cx, topY) {
-    ctx.fillStyle = '#4a4542';
-    ctx.fillRect(cx - 58, topY, 116, 102);
-    ctx.fillStyle = '#1b1411';
-    ctx.beginPath();
-    ctx.arc(cx, topY + 72, 32, Math.PI, 0);
-    ctx.lineTo(cx + 32, topY + 102);
-    ctx.lineTo(cx - 32, topY + 102);
-    ctx.fill();
-
-    // เปลวไฟอุ่นๆ
-    ctx.fillStyle = '#ff7b29';
-    ctx.beginPath();
-    ctx.arc(cx, topY + 84, 16, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffd54f';
-    ctx.beginPath();
-    ctx.arc(cx, topY + 88, 9, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function drawBed(ctx, x, y) {
-    // โครงเตียงไม้
-    ctx.fillStyle = '#472916';
-    ctx.fillRect(x, y, 185, 115);
-    // ฟูกและผ้าห่ม
-    ctx.fillStyle = '#e8dcc5';
-    ctx.fillRect(x + 12, y + 12, 160, 90);
-    ctx.fillStyle = '#335c7d';
-    ctx.fillRect(x + 56, y + 12, 116, 90);
-    // หมอน
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + 18, y + 24, 32, 64);
-    ctx.strokeStyle = '#24140a';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(x, y, 185, 115);
-  }
-
-  function drawStorageChest(ctx, x, y) {
-    ctx.fillStyle = '#6e4221';
-    ctx.fillRect(x, y, 110, 68);
-    ctx.strokeStyle = '#d4a359';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(x, y, 110, 68);
-    ctx.fillStyle = '#ffd27d';
-    ctx.fillRect(x + 47, y + 26, 16, 18);
   }
 
   function drawWorldPlayer(ctx) {
     const aura = activeCharacter ? AURAS[(activeCharacter.auraIdx || 0) % AURAS.length] : AURAS[0];
-    const bobOffset = player.isMoving ? 0 : Math.sin(player.idleBob) * 2;
+    const bobOffset = (player.mode === 'idle') ? Math.sin(player.idleBob) * 2 : 0;
 
-    // เงาใต้เท้า
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
     ctx.beginPath();
     ctx.ellipse(player.x, player.y, 34, 10, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
+
+    const activeSheet =
+      (player.mode === 'melee' && sheets.melee.ready) ? sheets.melee :
+      (player.mode === 'ranged' && sheets.ranged.ready) ? sheets.ranged :
+      sheets.walk;
 
     ctx.save();
     ctx.translate(player.x, player.y + bobOffset);
@@ -1290,18 +1222,18 @@
     ctx.shadowColor = aura.glow;
     ctx.shadowBlur = 12;
 
-    if (sheetReady && humanMaleSheet) {
-      const fw = humanMaleSheet.width / TOTAL_SHEET_COLS;
-      const fh = humanMaleSheet.height;
-      const sx = player.walkFrame * fw;
-      const sy = fh * 0.32;
-      const sh = fh * 0.36;
+    if (activeSheet && activeSheet.ready && activeSheet.img) {
+      const fw = activeSheet.img.width / activeSheet.cols;
+      const fh = activeSheet.img.height;
+      const colIdx = Math.min(player.frame, activeSheet.cols - 1);
+      const sx = colIdx * fw;
+      const sy = fh * 0.22;
+      const sh = fh * 0.56;
 
-      // วาดให้ฝ่าเท้าตัวละครยืนแตะจุด (0, 0) พอดี
       ctx.drawImage(
-        humanMaleSheet,
+        activeSheet.img,
         sx, sy, fw, sh,
-        -56, -112, 112, 118
+        -60, -114, 120, 120
       );
     } else {
       ctx.fillStyle = '#ffd27d';
@@ -1311,7 +1243,6 @@
     }
     ctx.restore();
 
-    // ป้ายชื่อบนหัวตัวละคร
     if (activeCharacter) {
       ctx.save();
       ctx.font = 'bold 14px sans-serif';
