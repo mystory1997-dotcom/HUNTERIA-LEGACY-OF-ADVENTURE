@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -34,7 +35,6 @@
     overflow: hidden;
   }
 
-  /* ปุ่ม Fullscreen มุมขวาบนของจอเกม */
   .fullscreen-toggle-btn {
     position: absolute;
     top: 1.6%;
@@ -151,28 +151,28 @@
 
   .pedestal-slot {
     position: absolute;
-    top: 34%;
-    width: 14.5%;
-    height: 52%;
+    top: 44%;
+    width: 13.5%;
+    height: 44%;
     border-radius: 16px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 19%;
+    padding-bottom: 8%;
     transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .pedestal-slot:active { transform: scale(0.96); }
-  .slot-0 { left: 11.5%; }
-  .slot-1 { left: 27.5%; }
-  .slot-2 { left: 43.1%; }
-  .slot-3 { left: 58.1%; }
+  .slot-0 { left: 12.2%; }
+  .slot-1 { left: 28.0%; }
+  .slot-2 { left: 43.4%; }
+  .slot-3 { left: 58.6%; }
 
   .slot-rune {
     position: absolute;
-    top: 28%;
-    width: 60%;
+    bottom: 12%;
+    width: 56%;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     border: 2px solid rgba(255, 215, 110, 0.85);
@@ -194,22 +194,23 @@
   }
 
   .slot-avatar-canvas {
-    width: 96%;
+    width: 82%;
     aspect-ratio: 1 / 1;
     z-index: 2;
+    margin-bottom: -14%;
     pointer-events: none;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.85));
   }
   .slot-char-badge {
     z-index: 3;
-    margin-top: 2px;
-    background: rgba(24, 15, 10, 0.88);
+    margin-top: 12%;
+    background: rgba(24, 15, 10, 0.9);
     border: 1px solid #d4a359;
     border-radius: 7px;
-    padding: 3px 7px;
+    padding: 2px 7px;
     text-align: center;
     color: #fff2d6;
-    font-size: clamp(8px, 0.9vw, 12px);
+    font-size: clamp(8px, 0.88vw, 11.5px);
     pointer-events: none;
   }
   .slot-char-badge strong { display: block; color: #ffd27d; }
@@ -297,12 +298,11 @@
   .swatch-2 { left: 16.9%; background: #9ef0a8; }
   .swatch-3 { left: 19.3%; background: #ff9c8a; }
 
-  /* ขยายขนาดตัวละครบนแท่นให้สง่างามเด่นชัด */
   .creator-avatar-canvas {
     position: absolute;
-    left: 40.5%;
-    top: 38.2%;
-    width: 19.0%;
+    left: 41.2%;
+    top: 39.2%;
+    width: 17.6%;
     aspect-ratio: 1 / 1;
     pointer-events: none;
     filter: drop-shadow(0 12px 18px rgba(0,0,0,0.92));
@@ -329,7 +329,7 @@
   .input-char-name {
     position: absolute;
     left: 79.2%; top: 49.0%; width: 16.9%; height: 4.2%;
-    background: rgba(18, 11, 7, 0.82);
+    background: rgba(18, 11, 7, 0.85);
     border: 1px solid rgba(212, 163, 89, 0.72);
     border-radius: 6px;
     color: #fff5dc;
@@ -340,7 +340,7 @@
     outline: none;
     user-select: text;
   }
-  .input-char-name::placeholder { color: rgba(235, 215, 178, 0.6); font-weight: 400; }
+  .input-char-name::placeholder { color: rgba(235, 215, 178, 0.65); font-weight: 400; }
 
   .hotspot-confirm-char { left: 79.3%; top: 54.4%; width: 16.7%; height: 7.2%; border-radius: 999px; }
   .hotspot-create-start { left: 79.3%; top: 63.0%; width: 16.7%; height: 8.6%; border-radius: 999px; }
@@ -544,7 +544,6 @@
 
 <div class="game-screen" id="gameScreen">
 
-  <!-- ปุ่มเข้า/ออก Fullscreen -->
   <button type="button" class="fullscreen-toggle-btn" id="btnFullscreen" onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
 
   <!-- ฉากที่ 1: หน้าจอ LOGIN -->
@@ -693,7 +692,6 @@
     auraIdx: 0
   };
 
-  // ================= ระบบ Fullscreen =================
   function toggleFullscreen() {
     playClickSound(650);
     const target = document.getElementById('gameScreen') || document.documentElement;
@@ -722,7 +720,6 @@
   document.addEventListener('fullscreenchange', syncFullscreenButton);
   document.addEventListener('webkitfullscreenchange', syncFullscreenButton);
 
-  // ================= โหลดไฟล์ภาพจาก GitHub =================
   let homeMapImg = null;
   let homeMapReady = false;
 
@@ -763,31 +760,62 @@
     }
   }
 
-  function initAssets() {
-    const mapBg = new Image();
-    mapBg.onload = () => {
-      homeMapImg = mapBg;
-      homeMapReady = true;
-    };
-    mapBg.src = 'home_map.jpg';
+  function loadImageWithFallback(candidates, onSuccess, onFail) {
+    let idx = 0;
+    function tryNext() {
+      if (idx >= candidates.length) {
+        if (onFail) onFail();
+        return;
+      }
+      const url = candidates[idx++];
+      const img = new Image();
+      img.onload = () => onSuccess(img, url);
+      img.onerror = tryNext;
+      img.src = url;
+    }
+    tryNext();
+  }
 
-    const prev = new Image();
-    prev.onload = () => {
-      previewImg = keyGreenToAlpha(prev);
-      previewReady = true;
-      renderCreatorPreview();
-      renderSlots();
-    };
-    prev.src = 'human_m_preview.jpg';
+  function initAssets() {
+    const ver = Date.now();
+
+    loadImageWithFallback(
+      [`home_map.jpg?v=${ver}`, `home_map.png?v=${ver}`],
+      (img) => {
+        homeMapImg = img;
+        homeMapReady = true;
+      },
+      () => {
+        homeMapReady = false;
+      }
+    );
+
+    loadImageWithFallback(
+      [`human_m_preview.jpg?v=${ver}`, `human_m_preview.png?v=${ver}`],
+      (img) => {
+        previewImg = keyGreenToAlpha(img);
+        previewReady = true;
+        renderCreatorPreview();
+        renderSlots();
+      },
+      () => {
+        previewReady = false;
+      }
+    );
 
     Object.keys(sheets).forEach((key) => {
       const entry = sheets[key];
-      const img = new Image();
-      img.onload = () => {
-        entry.img = keyGreenToAlpha(img);
-        entry.ready = true;
-      };
-      img.src = entry.file;
+      const baseName = entry.file.replace(/\.(jpg|jpeg|png)$/i, '');
+      loadImageWithFallback(
+        [`${baseName}.jpg?v=${ver}`, `${baseName}.png?v=${ver}`],
+        (img) => {
+          entry.img = keyGreenToAlpha(img);
+          entry.ready = true;
+        },
+        () => {
+          entry.ready = false;
+        }
+      );
     });
   }
 
@@ -814,7 +842,7 @@
     ctx.drawImage(
       previewImg,
       0, 0, previewImg.width, previewImg.height,
-      cw * 0.02, ch * 0.01, cw * 0.96, ch * 0.98
+      cw * 0.04, ch * 0.02, cw * 0.92, ch * 0.96
     );
     ctx.restore();
   }
@@ -1067,13 +1095,12 @@
     enterHomeMap(newChar);
   }
 
-  // ================= ระบบแมพบ้านตัวเอง (MY HOME MAP) =================
   let worldAnimId = null;
   let lastFrameTime = 0;
 
   const player = {
     x: 640,
-    y: 520,
+    y: 540,
     speed: 230,
     facing: 1,
     mode: 'idle',
@@ -1095,7 +1122,7 @@
     document.getElementById('worldHudSt').innerText = `ST: ${charData.st}/${charData.st}`;
 
     player.x = 640;
-    player.y = 520;
+    player.y = 540;
     player.facing = 1;
     player.mode = 'idle';
     player.frame = 0;
@@ -1190,7 +1217,7 @@
       vx /= len;
       vy /= len;
       player.x = Math.max(140, Math.min(1140, player.x + vx * player.speed * dt));
-      player.y = Math.max(410, Math.min(665, player.y + vy * player.speed * dt));
+      player.y = Math.max(430, Math.min(675, player.y + vy * player.speed * dt));
       if (Math.abs(vx) > 0.05) {
         player.facing = vx < 0 ? -1 : 1;
       }
@@ -1241,6 +1268,10 @@
     } else {
       ctx.fillStyle = '#3b2416';
       ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#ffd27d';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('กำลังโหลด home_map.jpg / home_map.png...', W / 2, H * 0.25);
     }
 
     drawWorldPlayer(ctx);
@@ -1303,7 +1334,6 @@
     }
   }
 
-  // ================= ระบบ Modal & Gmail =================
   function openGmailLogin() {
     const lastGmail = localStorage.getItem('hunteria_gmail') || '';
     const extraHtml = `
