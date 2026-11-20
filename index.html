@@ -9,7 +9,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
@@ -97,11 +97,8 @@
     left: 78.8%; top: 26.8%; width: 17.8%;
     text-align: center;
     font-size: clamp(9px, 0.9vw, 12px);
-    color: #ffe29a;
-    background: rgba(20, 12, 8, 0.75);
-    border: 1px solid rgba(212, 163, 89, 0.55);
-    border-radius: 6px;
-    padding: 3px 6px;
+    color: #ffe4a3;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -117,11 +114,8 @@
     left: 79.2%; top: 26.6%; width: 17.0%;
     text-align: center;
     font-size: clamp(8px, 0.85vw, 11px);
-    color: #ffd98e;
-    background: rgba(22, 14, 9, 0.78);
-    border: 1px solid rgba(200, 157, 84, 0.45);
-    border-radius: 5px;
-    padding: 2px 6px;
+    color: #ffe4a3;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -130,16 +124,16 @@
 
   .pedestal-slot {
     position: absolute;
-    top: 38%;
+    top: 36%;
     width: 13.5%;
-    height: 48%;
+    height: 50%;
     border-radius: 16px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 22%;
+    padding-bottom: 21%;
     transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .pedestal-slot:active { transform: scale(0.96); }
@@ -173,16 +167,16 @@
   }
 
   .slot-avatar-canvas {
-    width: 82%;
+    width: 84%;
     aspect-ratio: 1 / 1;
     z-index: 2;
     pointer-events: none;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.75));
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.8));
   }
   .slot-char-badge {
     z-index: 3;
     margin-top: 2px;
-    background: rgba(24, 15, 10, 0.9);
+    background: rgba(24, 15, 10, 0.86);
     border: 1px solid #d4a359;
     border-radius: 7px;
     padding: 3px 7px;
@@ -232,22 +226,7 @@
   .race-dwarf { top: 49.0%; }
   .race-beastkin { top: 56.8%; }
 
-  .custom-label-sub {
-    position: absolute;
-    left: 11.5%;
-    width: 10.0%;
-    text-align: center;
-    font-size: clamp(7.5px, 0.78vw, 10.5px);
-    color: #f3dfb8;
-    background: rgba(24, 15, 10, 0.78);
-    border-radius: 4px;
-    padding: 1px 4px;
-    pointer-events: none;
-  }
-  .sub-face { top: 66.8%; }
-  .sub-hair { top: 73.8%; }
-
-  .custom-value-box {
+  .fantasy-value-text {
     position: absolute;
     left: 11.8%;
     width: 9.4%;
@@ -255,20 +234,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff2d6;
+    color: #ffe7ad;
     font-weight: 700;
-    font-size: clamp(9px, 0.98vw, 12.5px);
-    text-shadow: 0 1px 3px #000;
+    letter-spacing: 0.4px;
+    font-size: clamp(8.5px, 0.92vw, 12px);
+    text-shadow: 0 1px 2px #140b06, 0 0 6px rgba(0, 0, 0, 0.9);
     pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .val-gender { top: 69.2%; }
-  .val-hair { top: 76.2%; }
+  .val-style { top: 69.2%; }
+  .val-aura { top: 76.2%; }
 
   .arrow-btn { width: 2.3%; height: 3.8%; border-radius: 6px; }
-  .gender-prev { left: 9.4%; top: 69.1%; }
-  .gender-next { left: 21.3%; top: 69.1%; }
-  .hair-prev { left: 9.4%; top: 76.1%; }
-  .hair-next { left: 21.3%; top: 76.1%; }
+  .style-prev { left: 9.4%; top: 69.1%; }
+  .style-next { left: 21.3%; top: 69.1%; }
+  .aura-prev { left: 9.4%; top: 76.1%; }
+  .aura-next { left: 21.3%; top: 76.1%; }
 
   .swatch-btn {
     top: 83.2%;
@@ -282,20 +265,19 @@
     box-shadow: 0 0 10px #ffd27d;
     transform: scale(1.12);
   }
-  .swatch-0 { left: 12.1%; background: #8c5a3c; }
-  .swatch-1 { left: 14.5%; background: #e8c458; }
-  .swatch-2 { left: 16.9%; background: #3b373c; }
-  .swatch-3 { left: 19.3%; background: #a8423b; }
+  .swatch-0 { left: 12.1%; background: #f2c97d; }
+  .swatch-1 { left: 14.5%; background: #82d4ff; }
+  .swatch-2 { left: 16.9%; background: #9ef0a8; }
+  .swatch-3 { left: 19.3%; background: #ff9c8a; }
 
-  /* ปรับตำแหน่งแคนวาสให้ยืนบนแท่นกลางจอพอดี ไม่ลอย */
   .creator-avatar-canvas {
     position: absolute;
-    left: 43.6%;
-    top: 46.5%;
-    width: 12.8%;
+    left: 43.2%;
+    top: 43.5%;
+    width: 13.6%;
     aspect-ratio: 1 / 1;
     pointer-events: none;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.85));
   }
 
   .stat-circle-val {
@@ -423,22 +405,22 @@
 
     <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="240" height="240"></canvas>
       <div id="slotBadge0"></div>
     </div>
     <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="240" height="240"></canvas>
       <div id="slotBadge1"></div>
     </div>
     <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="240" height="240"></canvas>
       <div id="slotBadge2"></div>
     </div>
     <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="240" height="240"></canvas>
       <div id="slotBadge3"></div>
     </div>
 
@@ -458,20 +440,18 @@
     <button type="button" class="game-btn race-hotspot race-dwarf" data-race="Dwarf" onclick="setRace('Dwarf')"></button>
     <button type="button" class="game-btn race-hotspot race-beastkin" data-race="Beastkin" onclick="setRace('Beastkin')"></button>
 
-    <div class="custom-label-sub sub-face">ใบหน้า/เพศ</div>
-    <button type="button" class="game-btn arrow-btn gender-prev" onclick="cycleFace(-1)"></button>
-    <div class="custom-value-box val-gender" id="valFace">ใบหน้า 1</div>
-    <button type="button" class="game-btn arrow-btn gender-next" onclick="cycleFace(1)"></button>
+    <button type="button" class="game-btn arrow-btn style-prev" onclick="cycleStyle(-1)"></button>
+    <div class="fantasy-value-text val-style" id="valStyle">รูปลักษณ์ที่ 1</div>
+    <button type="button" class="game-btn arrow-btn style-next" onclick="cycleStyle(1)"></button>
 
-    <div class="custom-label-sub sub-hair">ทรงผม</div>
-    <button type="button" class="game-btn arrow-btn hair-prev" onclick="cycleHair(-1)"></button>
-    <div class="custom-value-box val-hair" id="valHair">ทรงที่ 1</div>
-    <button type="button" class="game-btn arrow-btn hair-next" onclick="cycleHair(1)"></button>
+    <button type="button" class="game-btn arrow-btn aura-prev" onclick="cycleAura(-1)"></button>
+    <div class="fantasy-value-text val-aura" id="valAura">ออร่าทอง</div>
+    <button type="button" class="game-btn arrow-btn aura-next" onclick="cycleAura(1)"></button>
 
-    <button type="button" class="game-btn swatch-btn swatch-0 is-selected" onclick="setHairColor(0)"></button>
-    <button type="button" class="game-btn swatch-btn swatch-1" onclick="setHairColor(1)"></button>
-    <button type="button" class="game-btn swatch-btn swatch-2" onclick="setHairColor(2)"></button>
-    <button type="button" class="game-btn swatch-btn swatch-3" onclick="setHairColor(3)"></button>
+    <button type="button" class="game-btn swatch-btn swatch-0 is-selected" onclick="setSwatch(0)"></button>
+    <button type="button" class="game-btn swatch-btn swatch-1" onclick="setSwatch(1)"></button>
+    <button type="button" class="game-btn swatch-btn swatch-2" onclick="setSwatch(2)"></button>
+    <button type="button" class="game-btn swatch-btn swatch-3" onclick="setSwatch(3)"></button>
 
     <canvas class="creator-avatar-canvas" id="creatorCanvas" width="260" height="260"></canvas>
 
@@ -503,9 +483,23 @@
   let audioCtx = null;
   let selectedSlot = null;
   let characters = [null, null, null, null];
-  let sheetImg = null;
-  let sheetReady = false;
-  let cleanSheetCanvas = null;
+
+  const HUMAN_STYLES = [
+    { file: 'human_1.jpg', label: 'รูปลักษณ์ที่ 1' },
+    { file: 'human_2.jpg', label: 'รูปลักษณ์ที่ 2' },
+    { file: 'human_3.jpg', label: 'รูปลักษณ์ที่ 3' },
+    { file: 'human_4.jpg', label: 'รูปลักษณ์ที่ 4' },
+    { file: 'human_5.jpg', label: 'รูปลักษณ์ที่ 5' },
+    { file: 'human_6.jpg', label: 'รูปลักษณ์ที่ 6' },
+    { file: 'human_7.jpg', label: 'รูปลักษณ์ที่ 7' }
+  ];
+
+  const AURAS = [
+    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.75)' },
+    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.75)' },
+    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.75)' },
+    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.75)' }
+  ];
 
   const RACES = {
     Human:    { th: 'มนุษย์',      hp: 100, mp: 100, st: 100 },
@@ -514,121 +508,84 @@
     Beastkin: { th: 'มนุษย์สัตว์', hp: 150, mp: 50,  st: 100 }
   };
 
-  const HAIR_FILTERS = [
-    'none',
-    'hue-rotate(24deg) saturate(1.25) brightness(1.12)',
-    'brightness(0.45) contrast(1.15)',
-    'hue-rotate(-25deg) saturate(1.45) brightness(0.95)'
-  ];
+  const cleanedCache = {};
 
   let draft = {
     race: 'Human',
-    faceIdx: 0,
-    hairIdx: 0,
-    outfitIdx: 0,
-    colorIdx: 0
+    styleIdx: 0,
+    auraIdx: 0
   };
 
-  function initPartsSheet() {
-    sheetImg = new Image();
-    sheetImg.crossOrigin = 'anonymous';
-    sheetImg.onload = () => {
-      try {
-        const w = sheetImg.naturalWidth;
-        const h = sheetImg.naturalHeight;
-        cleanSheetCanvas = document.createElement('canvas');
-        cleanSheetCanvas.width = w;
-        cleanSheetCanvas.height = h;
-        const ctx = cleanSheetCanvas.getContext('2d');
-        ctx.drawImage(sheetImg, 0, 0, w, h);
-
-        const imgData = ctx.getImageData(0, 0, w, h);
-        const data = imgData.data;
-
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-
-          if (g > 130 && g > r * 1.22 && g > b * 1.22) {
-            data[i + 3] = 0;
-          } else if (g > 105 && g > r * 1.12 && g > b * 1.12) {
-            data[i + 1] = Math.min(r, b);
-            data[i + 3] = 70;
-          }
-        }
-        ctx.putImageData(imgData, 0, 0);
-        sheetReady = true;
-      } catch (err) {
-        sheetReady = false;
-      }
-      renderCreatorPreview();
-      renderSlots();
-    };
-    sheetImg.onerror = () => {
-      sheetReady = false;
-      renderCreatorPreview();
-    };
-    sheetImg.src = 'human_parts.jpg';
-  }
-
-  function drawComposedAvatar(targetCanvas, cfg) {
-    if (!targetCanvas) return;
-    const ctx = targetCanvas.getContext('2d');
-    const cw = targetCanvas.width;
-    const ch = targetCanvas.height;
-    ctx.clearRect(0, 0, cw, ch);
-
-    if (!sheetReady || !cleanSheetCanvas) {
-      ctx.fillStyle = 'rgba(255, 224, 150, 0.75)';
-      ctx.font = 'bold 14px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Loading...', cw / 2, ch / 2);
+  function loadCleanedCharacter(styleIdx, onDone) {
+    const info = HUMAN_STYLES[styleIdx] || HUMAN_STYLES[0];
+    const key = info.file;
+    if (cleanedCache[key]) {
+      if (onDone) onDone(cleanedCache[key]);
       return;
     }
 
-    const sw = cleanSheetCanvas.width;
-    const sh = cleanSheetCanvas.height;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const c = document.createElement('canvas');
+        c.width = w;
+        c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
 
-    // 1. ลำตัวพื้นฐาน (ตัวซ้ายบนชีต ตัดเฉพาะช่วงลำตัวถึงเท้าโดยไม่ดึงหัวที่มีเศษติด)
-    const isFemale = cfg.faceIdx % 2 === 1;
-    const bodySx = isFemale ? sw * 0.22 : sw * 0.08;
-    ctx.drawImage(
-      cleanSheetCanvas,
-      bodySx, sh * 0.44, sw * 0.12, sh * 0.34,
-      cw * 0.32, ch * 0.46, cw * 0.36, ch * 0.42
-    );
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const d = imgData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const r = d[i], g = d[i + 1], b = d[i + 2];
+          if (g > 130 && g > r * 1.22 && g > b * 1.22) {
+            d[i + 3] = 0;
+          } else if (g > 105 && g > r * 1.12 && g > b * 1.12) {
+            d[i + 1] = Math.min(r, b);
+            d[i + 3] = 75;
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        cleanedCache[key] = c;
+      } catch (e) {
+        cleanedCache[key] = img;
+      }
+      if (onDone) onDone(cleanedCache[key]);
+    };
+    img.onerror = () => {
+      if (onDone) onDone(null);
+    };
+    img.src = key;
+  }
 
-    // 2. ชุดนักผจญภัย (แถว 3 ช่วง sy ~0.53-0.70)
-    const oIdx = cfg.outfitIdx % 4;
-    const oColX = [0.515, 0.625, 0.742, 0.862][oIdx];
-    ctx.drawImage(
-      cleanSheetCanvas,
-      sw * oColX, sh * 0.53, sw * 0.095, sh * 0.17,
-      cw * 0.32, ch * 0.52, cw * 0.36, ch * 0.24
-    );
+  function drawPresetCharacter(canvas, cfg) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cw = canvas.width;
+    const ch = canvas.height;
+    ctx.clearRect(0, 0, cw, ch);
 
-    // 3. ใบหน้าหัวโล้น (แถว 1 ช่วง sy ~0.07-0.23)
-    const fIdx = cfg.faceIdx % 4;
-    const fColX = [0.51, 0.62, 0.735, 0.85][fIdx];
-    ctx.drawImage(
-      cleanSheetCanvas,
-      sw * fColX, sh * 0.07, sw * 0.095, sh * 0.16,
-      cw * 0.33, ch * 0.18, cw * 0.34, ch * 0.28
-    );
+    const idx = (cfg.styleIdx || 0) % HUMAN_STYLES.length;
+    const aura = AURAS[(cfg.auraIdx || 0) % AURAS.length];
 
-    // 4. ทรงผม (แถว 2 ช่วง sy ~0.28-0.46) + ปรับสีผม
-    const hIdx = cfg.hairIdx % 4;
-    const hColX = [0.51, 0.62, 0.735, 0.85][hIdx];
+    loadCleanedCharacter(idx, (src) => {
+      ctx.clearRect(0, 0, cw, ch);
+      if (!src) {
+        ctx.fillStyle = 'rgba(255, 224, 150, 0.8)';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(HUMAN_STYLES[idx].label, cw / 2, ch / 2);
+        return;
+      }
 
-    ctx.save();
-    ctx.filter = HAIR_FILTERS[cfg.colorIdx] || 'none';
-    ctx.drawImage(
-      cleanSheetCanvas,
-      sw * hColX, sh * 0.285, sw * 0.10, sh * 0.175,
-      cw * 0.325, ch * 0.16, cw * 0.35, ch * 0.26
-    );
-    ctx.restore();
+      ctx.save();
+      ctx.shadowColor = aura.glow;
+      ctx.shadowBlur = 14;
+      ctx.drawImage(src, cw * 0.08, ch * 0.04, cw * 0.84, ch * 0.92);
+      ctx.restore();
+    });
   }
 
   function playClickSound(pitch = 520) {
@@ -693,7 +650,7 @@
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
     loadCharacters();
-    initPartsSheet();
+    renderCreatorPreview();
   };
 
   function switchScene(sceneId) {
@@ -762,7 +719,7 @@
       const char = characters[i];
       if (char) {
         const rInfo = RACES[char.race] || RACES.Human;
-        drawComposedAvatar(canvasEl, char);
+        drawPresetCharacter(canvasEl, char);
         badgeEl.innerHTML = `<div class="slot-char-badge"><strong>${escapeHtml(char.name)}</strong><span>${rInfo.th} Lv.${char.level || 1}</span></div>`;
       } else {
         if (canvasEl) canvasEl.getContext('2d').clearRect(0, 0, canvasEl.width, canvasEl.height);
@@ -809,10 +766,10 @@
       return;
     }
 
-    draft = { race: 'Human', faceIdx: 0, hairIdx: 0, outfitIdx: 0, colorIdx: 0 };
+    draft = { race: 'Human', styleIdx: 0, auraIdx: 0 };
     document.getElementById('createCharNameInput').value = '';
     setRace('Human');
-    setHairColor(0);
+    setSwatch(0);
     renderCreatorPreview();
     switchScene('sceneCreate');
   }
@@ -829,19 +786,23 @@
     renderCreatorPreview();
   }
 
-  function cycleFace(dir) {
-    draft.faceIdx = (draft.faceIdx + dir + 4) % 4;
-    draft.outfitIdx = draft.faceIdx;
+  function cycleStyle(dir) {
+    const total = HUMAN_STYLES.length;
+    draft.styleIdx = (draft.styleIdx + dir + total) % total;
     renderCreatorPreview();
   }
 
-  function cycleHair(dir) {
-    draft.hairIdx = (draft.hairIdx + dir + 4) % 4;
+  function cycleAura(dir) {
+    const total = AURAS.length;
+    draft.auraIdx = (draft.auraIdx + dir + total) % total;
+    document.querySelectorAll('.swatch-btn').forEach((el, i) => {
+      el.classList.toggle('is-selected', i === draft.auraIdx);
+    });
     renderCreatorPreview();
   }
 
-  function setHairColor(idx) {
-    draft.colorIdx = idx;
+  function setSwatch(idx) {
+    draft.auraIdx = idx;
     document.querySelectorAll('.swatch-btn').forEach((el, i) => {
       el.classList.toggle('is-selected', i === idx);
     });
@@ -849,9 +810,9 @@
   }
 
   function renderCreatorPreview() {
-    document.getElementById('valFace').innerText = 'ใบหน้า ' + (draft.faceIdx + 1);
-    document.getElementById('valHair').innerText = 'ทรงที่ ' + (draft.hairIdx + 1);
-    drawComposedAvatar(document.getElementById('creatorCanvas'), draft);
+    document.getElementById('valStyle').innerText = HUMAN_STYLES[draft.styleIdx].label;
+    document.getElementById('valAura').innerText = AURAS[draft.auraIdx].name;
+    drawPresetCharacter(document.getElementById('creatorCanvas'), draft);
   }
 
   function saveCreatedCharacter(enterImmediately) {
@@ -866,10 +827,8 @@
     characters[selectedSlot] = {
       name: name,
       race: draft.race,
-      faceIdx: draft.faceIdx,
-      hairIdx: draft.hairIdx,
-      outfitIdx: draft.outfitIdx,
-      colorIdx: draft.colorIdx,
+      styleIdx: draft.styleIdx,
+      auraIdx: draft.auraIdx,
       level: 1,
       hp: r.hp,
       mp: r.mp,
