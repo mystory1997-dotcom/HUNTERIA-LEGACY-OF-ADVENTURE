@@ -151,28 +151,28 @@
 
   .pedestal-slot {
     position: absolute;
-    top: 36%;
-    width: 13.5%;
-    height: 50%;
+    top: 34%;
+    width: 14.5%;
+    height: 52%;
     border-radius: 16px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 21%;
+    padding-bottom: 19%;
     transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .pedestal-slot:active { transform: scale(0.96); }
-  .slot-0 { left: 12.0%; }
-  .slot-1 { left: 28.0%; }
-  .slot-2 { left: 43.6%; }
-  .slot-3 { left: 58.6%; }
+  .slot-0 { left: 11.5%; }
+  .slot-1 { left: 27.5%; }
+  .slot-2 { left: 43.1%; }
+  .slot-3 { left: 58.1%; }
 
   .slot-rune {
     position: absolute;
     top: 28%;
-    width: 58%;
+    width: 60%;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     border: 2px solid rgba(255, 215, 110, 0.85);
@@ -194,16 +194,16 @@
   }
 
   .slot-avatar-canvas {
-    width: 84%;
+    width: 96%;
     aspect-ratio: 1 / 1;
     z-index: 2;
     pointer-events: none;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.85));
   }
   .slot-char-badge {
     z-index: 3;
     margin-top: 2px;
-    background: rgba(24, 15, 10, 0.86);
+    background: rgba(24, 15, 10, 0.88);
     border: 1px solid #d4a359;
     border-radius: 7px;
     padding: 3px 7px;
@@ -297,14 +297,15 @@
   .swatch-2 { left: 16.9%; background: #9ef0a8; }
   .swatch-3 { left: 19.3%; background: #ff9c8a; }
 
+  /* ขยายขนาดตัวละครบนแท่นให้สง่างามเด่นชัด */
   .creator-avatar-canvas {
     position: absolute;
-    left: 43.2%;
-    top: 43.5%;
-    width: 13.6%;
+    left: 40.5%;
+    top: 38.2%;
+    width: 19.0%;
     aspect-ratio: 1 / 1;
     pointer-events: none;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.85));
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,0.92));
   }
 
   .stat-circle-val {
@@ -327,9 +328,9 @@
 
   .input-char-name {
     position: absolute;
-    left: 79.2%; top: 47.4%; width: 16.9%; height: 4.4%;
-    background: rgba(18, 11, 7, 0.72);
-    border: 1px solid rgba(212, 163, 89, 0.65);
+    left: 79.2%; top: 49.0%; width: 16.9%; height: 4.2%;
+    background: rgba(18, 11, 7, 0.82);
+    border: 1px solid rgba(212, 163, 89, 0.72);
     border-radius: 6px;
     color: #fff5dc;
     text-align: center;
@@ -339,10 +340,10 @@
     outline: none;
     user-select: text;
   }
-  .input-char-name::placeholder { color: rgba(235, 215, 178, 0.55); font-weight: 400; }
+  .input-char-name::placeholder { color: rgba(235, 215, 178, 0.6); font-weight: 400; }
 
-  .hotspot-confirm-char { left: 79.3%; top: 53.6%; width: 16.7%; height: 7.4%; border-radius: 999px; }
-  .hotspot-create-start { left: 79.3%; top: 62.6%; width: 16.7%; height: 8.6%; border-radius: 999px; }
+  .hotspot-confirm-char { left: 79.3%; top: 54.4%; width: 16.7%; height: 7.2%; border-radius: 999px; }
+  .hotspot-create-start { left: 79.3%; top: 63.0%; width: 16.7%; height: 8.6%; border-radius: 999px; }
   .hotspot-create-back { left: 4.5%; top: 88.2%; width: 11.4%; height: 6.2%; border-radius: 999px; }
 
   /* ================= ฉาก 4: แมพบ้านตัวเอง (MY HOME) ================= */
@@ -401,7 +402,7 @@
 
   .world-btn-exit {
     position: absolute;
-    top: 7.5%;
+    top: 7.8%;
     right: 1.5%;
     background: linear-gradient(180deg, #4b3321, #2c1d12);
     border: 1.5px solid #c89d54;
@@ -560,22 +561,22 @@
 
     <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="240" height="240"></canvas>
       <div id="slotBadge0"></div>
     </div>
     <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="240" height="240"></canvas>
       <div id="slotBadge1"></div>
     </div>
     <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="240" height="240"></canvas>
       <div id="slotBadge2"></div>
     </div>
     <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="220" height="220"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="240" height="240"></canvas>
       <div id="slotBadge3"></div>
     </div>
 
@@ -608,7 +609,7 @@
     <button type="button" class="game-btn swatch-btn swatch-2" onclick="setSwatch(2)"></button>
     <button type="button" class="game-btn swatch-btn swatch-3" onclick="setSwatch(3)"></button>
 
-    <canvas class="creator-avatar-canvas" id="creatorCanvas" width="240" height="240"></canvas>
+    <canvas class="creator-avatar-canvas" id="creatorCanvas" width="280" height="280"></canvas>
 
     <div class="stat-circle-val stat-hp" id="statHpVal">100</div>
     <div class="stat-circle-val stat-mp" id="statMpVal">100</div>
@@ -680,10 +681,10 @@
   const GENDERS = ['ชาย (Male)', 'หญิง (Female)'];
 
   const AURAS = [
-    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.75)' },
-    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.75)' },
-    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.75)' },
-    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.75)' }
+    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.85)' },
+    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.85)' },
+    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.85)' },
+    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.85)' }
   ];
 
   let draft = {
@@ -768,34 +769,23 @@
       homeMapImg = mapBg;
       homeMapReady = true;
     };
-    mapBg.onerror = () => {
-      homeMapReady = false;
-    };
     mapBg.src = 'home_map.jpg';
 
     const prev = new Image();
-    prev.crossOrigin = 'anonymous';
     prev.onload = () => {
       previewImg = keyGreenToAlpha(prev);
       previewReady = true;
       renderCreatorPreview();
       renderSlots();
     };
-    prev.onerror = () => {
-      previewReady = false;
-    };
     prev.src = 'human_m_preview.jpg';
 
     Object.keys(sheets).forEach((key) => {
       const entry = sheets[key];
       const img = new Image();
-      img.crossOrigin = 'anonymous';
       img.onload = () => {
         entry.img = keyGreenToAlpha(img);
         entry.ready = true;
-      };
-      img.onerror = () => {
-        entry.ready = false;
       };
       img.src = entry.file;
     });
@@ -820,11 +810,11 @@
 
     ctx.save();
     ctx.shadowColor = aura.glow;
-    ctx.shadowBlur = 14;
+    ctx.shadowBlur = 18;
     ctx.drawImage(
       previewImg,
       0, 0, previewImg.width, previewImg.height,
-      cw * 0.08, ch * 0.04, cw * 0.84, ch * 0.92
+      cw * 0.02, ch * 0.01, cw * 0.96, ch * 0.98
     );
     ctx.restore();
   }
@@ -1290,7 +1280,7 @@
       ctx.drawImage(
         activeSheet.img,
         sx, sy, fw, sh,
-        -60, -114, 120, 120
+        -64, -122, 128, 128
       );
     } else {
       ctx.fillStyle = '#ffd27d';
@@ -1306,9 +1296,9 @@
       ctx.textAlign = 'center';
       ctx.fillStyle = 'rgba(20, 12, 7, 0.75)';
       const textW = ctx.measureText(activeCharacter.name).width + 16;
-      ctx.fillRect(player.x - textW / 2, player.y - 138, textW, 22);
+      ctx.fillRect(player.x - textW / 2, player.y - 146, textW, 22);
       ctx.fillStyle = '#ffe7ad';
-      ctx.fillText(activeCharacter.name, player.x, player.y - 122);
+      ctx.fillText(activeCharacter.name, player.x, player.y - 130);
       ctx.restore();
     }
   }
