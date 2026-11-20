@@ -34,7 +34,6 @@
     overflow: hidden;
   }
 
-  /* ระบบสลับฉากแบบสมูท */
   .scene {
     position: absolute;
     inset: 0;
@@ -57,7 +56,6 @@
   #sceneSelect { background-image: url('select.jpg'); }
   #sceneCreate { background-image: url('create.jpg'); }
 
-  /* ปุ่มเกมสัมผัสสมูทไร้กล่องสีฟ้า */
   .game-btn {
     position: absolute;
     background: transparent;
@@ -132,16 +130,16 @@
 
   .pedestal-slot {
     position: absolute;
-    top: 38%;
+    top: 34%;
     width: 13.5%;
-    height: 48%;
+    height: 52%;
     border-radius: 16px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 18%;
+    padding-bottom: 19%;
     transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .pedestal-slot:active { transform: scale(0.96); }
@@ -152,7 +150,7 @@
 
   .slot-rune {
     position: absolute;
-    top: 24%;
+    top: 28%;
     width: 58%;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
@@ -174,8 +172,9 @@
     50% { box-shadow: 0 0 26px rgba(255, 220, 120, 0.95), inset 0 0 18px rgba(255, 240, 180, 0.7); }
   }
 
-  .slot-avatar-wrap {
-    width: 78%;
+  .slot-avatar-canvas {
+    width: 82%;
+    aspect-ratio: 1 / 1;
     z-index: 2;
     pointer-events: none;
     filter: drop-shadow(0 6px 8px rgba(0,0,0,0.75));
@@ -216,7 +215,6 @@
   .hotspot-back { left: 4.5%; top: 88.2%; width: 11.4%; height: 6.2%; border-radius: 999px; }
 
   /* ================= ฉาก 3: CREATE CHARACTER ================= */
-  /* ปุ่มเลือก 4 เผ่าด้านซ้ายตรงกรอบภาพ create.jpg */
   .race-hotspot {
     left: 10.6%;
     width: 11.8%;
@@ -234,35 +232,44 @@
   .race-dwarf { top: 49.0%; }
   .race-beastkin { top: 56.8%; }
 
-  /* แถบปรับแต่ง Gender / Hair Style / Color Palette ด้านล่างซ้าย */
+  .custom-label-sub {
+    position: absolute;
+    left: 11.5%;
+    width: 10.0%;
+    text-align: center;
+    font-size: clamp(7.5px, 0.78vw, 10.5px);
+    color: #f3dfb8;
+    background: rgba(24, 15, 10, 0.78);
+    border-radius: 4px;
+    padding: 1px 4px;
+    pointer-events: none;
+  }
+  .sub-face { top: 66.8%; }
+  .sub-hair { top: 73.8%; }
+
   .custom-value-box {
     position: absolute;
     left: 11.8%;
     width: 9.4%;
-    height: 3.6%;
+    height: 3.4%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff2d6;
     font-weight: 700;
-    font-size: clamp(9px, 1vw, 13px);
+    font-size: clamp(9px, 0.98vw, 12.5px);
     text-shadow: 0 1px 3px #000;
     pointer-events: none;
   }
   .val-gender { top: 69.2%; }
   .val-hair { top: 76.2%; }
 
-  .arrow-btn {
-    width: 2.3%;
-    height: 3.8%;
-    border-radius: 6px;
-  }
+  .arrow-btn { width: 2.3%; height: 3.8%; border-radius: 6px; }
   .gender-prev { left: 9.4%; top: 69.1%; }
   .gender-next { left: 21.3%; top: 69.1%; }
   .hair-prev { left: 9.4%; top: 76.1%; }
   .hair-next { left: 21.3%; top: 76.1%; }
 
-  /* จานสีผม/สีผิว 4 ช่องตรง Color Palette */
   .swatch-btn {
     top: 83.2%;
     width: 2.1%;
@@ -275,23 +282,22 @@
     box-shadow: 0 0 10px #ffd27d;
     transform: scale(1.12);
   }
-  .swatch-0 { left: 12.1%; background: #f2c97d; }
-  .swatch-1 { left: 14.5%; background: #e8e6e1; }
-  .swatch-2 { left: 16.9%; background: #4a8fb8; }
-  .swatch-3 { left: 19.3%; background: #8c3b3b; }
+  .swatch-0 { left: 12.1%; background: #8c5a3c; }
+  .swatch-1 { left: 14.5%; background: #e8c458; }
+  .swatch-2 { left: 16.9%; background: #3b373c; }
+  .swatch-3 { left: 19.3%; background: #a8423b; }
 
-  /* ตัวละครตัวอย่างยืนบนแท่นกลางจอ */
-  .creator-stage-avatar {
+  /* แคนวาสประกอบร่างตัวละคร MapleStory บนแท่นกลางจอ */
+  .creator-avatar-canvas {
     position: absolute;
-    left: 43.2%;
-    top: 33.5%;
-    width: 13.6%;
+    left: 42.5%;
+    top: 28.5%;
+    width: 15.0%;
+    aspect-ratio: 1 / 1;
     pointer-events: none;
-    filter: drop-shadow(0 10px 14px rgba(0,0,0,0.8));
-    transition: transform 0.25s ease;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.8));
   }
 
-  /* ตัวเลขค่าสเตตัส HP / MP / ST ในวงกลม 3 วงด้านขวา */
   .stat-circle-val {
     position: absolute;
     top: 34.4%;
@@ -310,13 +316,9 @@
   .stat-mp { left: 85.4%; }
   .stat-st { left: 91.4%; }
 
-  /* ช่องพิมพ์ชื่อตัวละครตรงกรอบ Character Name ด้านขวา */
   .input-char-name {
     position: absolute;
-    left: 79.2%;
-    top: 47.4%;
-    width: 16.9%;
-    height: 4.4%;
+    left: 79.2%; top: 47.4%; width: 16.9%; height: 4.4%;
     background: rgba(18, 11, 7, 0.72);
     border: 1px solid rgba(212, 163, 89, 0.65);
     border-radius: 6px;
@@ -330,7 +332,6 @@
   }
   .input-char-name::placeholder { color: rgba(235, 215, 178, 0.55); font-weight: 400; }
 
-  /* ปุ่ม CONFIRM CHARACTER และ START GAME ด้านขวา */
   .hotspot-confirm-char { left: 79.3%; top: 53.6%; width: 16.7%; height: 7.4%; border-radius: 999px; }
   .hotspot-create-start { left: 79.3%; top: 62.6%; width: 16.7%; height: 8.6%; border-radius: 999px; }
   .hotspot-create-back { left: 4.5%; top: 88.2%; width: 11.4%; height: 6.2%; border-radius: 999px; }
@@ -422,22 +423,22 @@
 
     <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
       <div class="slot-rune"></div>
-      <div class="slot-avatar-wrap" id="slotAvatar0"></div>
+      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="220" height="220"></canvas>
       <div id="slotBadge0"></div>
     </div>
     <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
       <div class="slot-rune"></div>
-      <div class="slot-avatar-wrap" id="slotAvatar1"></div>
+      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="220" height="220"></canvas>
       <div id="slotBadge1"></div>
     </div>
     <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
       <div class="slot-rune"></div>
-      <div class="slot-avatar-wrap" id="slotAvatar2"></div>
+      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="220" height="220"></canvas>
       <div id="slotBadge2"></div>
     </div>
     <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
       <div class="slot-rune"></div>
-      <div class="slot-avatar-wrap" id="slotAvatar3"></div>
+      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="220" height="220"></canvas>
       <div id="slotBadge3"></div>
     </div>
 
@@ -452,17 +453,17 @@
 
   <!-- ฉากที่ 3: หน้าจอ CREATE CHARACTER -->
   <div class="scene" id="sceneCreate">
-    <!-- ปุ่มเลือก 4 เผ่าด้านซ้าย -->
     <button type="button" class="game-btn race-hotspot race-human is-selected" data-race="Human" onclick="setRace('Human')"></button>
     <button type="button" class="game-btn race-hotspot race-elf" data-race="Elf" onclick="setRace('Elf')"></button>
     <button type="button" class="game-btn race-hotspot race-dwarf" data-race="Dwarf" onclick="setRace('Dwarf')"></button>
     <button type="button" class="game-btn race-hotspot race-beastkin" data-race="Beastkin" onclick="setRace('Beastkin')"></button>
 
-    <!-- ปรับเพศ ทรงผม และจานสี -->
-    <button type="button" class="game-btn arrow-btn gender-prev" onclick="cycleGender(-1)"></button>
-    <div class="custom-value-box val-gender" id="valGender">ชาย</div>
-    <button type="button" class="game-btn arrow-btn gender-next" onclick="cycleGender(1)"></button>
+    <div class="custom-label-sub sub-face">ใบหน้า/เพศ</div>
+    <button type="button" class="game-btn arrow-btn gender-prev" onclick="cycleFace(-1)"></button>
+    <div class="custom-value-box val-gender" id="valFace">ใบหน้า 1</div>
+    <button type="button" class="game-btn arrow-btn gender-next" onclick="cycleFace(1)"></button>
 
+    <div class="custom-label-sub sub-hair">ทรงผม</div>
     <button type="button" class="game-btn arrow-btn hair-prev" onclick="cycleHair(-1)"></button>
     <div class="custom-value-box val-hair" id="valHair">ทรงที่ 1</div>
     <button type="button" class="game-btn arrow-btn hair-next" onclick="cycleHair(1)"></button>
@@ -472,22 +473,20 @@
     <button type="button" class="game-btn swatch-btn swatch-2" onclick="setHairColor(2)"></button>
     <button type="button" class="game-btn swatch-btn swatch-3" onclick="setHairColor(3)"></button>
 
-    <!-- ตัวละครอนิเมะยืนบนแท่นกลางจอ -->
-    <div class="creator-stage-avatar" id="creatorAvatarStage"></div>
+    <!-- แคนวาสประกอบร่างตัวละคร MapleStory บนแท่นกลางจอ -->
+    <canvas class="creator-avatar-canvas" id="creatorCanvas" width="260" height="260"></canvas>
 
-    <!-- ตัวเลขค่าสเตตัส HP / MP / ST ในวงกลม 3 วงด้านขวา -->
     <div class="stat-circle-val stat-hp" id="statHpVal">100</div>
     <div class="stat-circle-val stat-mp" id="statMpVal">100</div>
     <div class="stat-circle-val stat-st" id="statStVal">100</div>
 
-    <!-- ช่องพิมพ์ชื่อ + ปุ่มยืนยัน + ปุ่มเริ่มเกม -->
     <input type="text" id="createCharNameInput" class="input-char-name" maxlength="14" placeholder="พิมพ์ชื่อตัวละคร...">
     <button type="button" class="game-btn blue-glow hotspot-confirm-char" data-action="confirmCreate" aria-label="CONFIRM CHARACTER"></button>
     <button type="button" class="game-btn blue-glow hotspot-create-start" data-action="confirmAndStart" aria-label="START GAME"></button>
     <button type="button" class="game-btn hotspot-create-back" data-action="backToSelect" aria-label="BACK"></button>
   </div>
 
-  <!-- Modal แจ้งเตือน -->
+  <!-- Modal -->
   <div class="modal-overlay" id="modal">
     <div class="modal-box">
       <h2 id="modalTitle">แจ้งเตือน</h2>
@@ -505,24 +504,142 @@
   let audioCtx = null;
   let selectedSlot = null;
   let characters = [null, null, null, null];
+  let sheetImg = null;
+  let sheetReady = false;
+  let cleanSheetCanvas = null;
 
-  // ข้อมูลค่าพลังตั้งต้นทั้ง 4 เผ่า (รวม 300 แต้มเท่ากัน)
   const RACES = {
-    Human:    { th: 'มนุษย์',      hp: 100, mp: 100, st: 100, skin: '#f7d3ba', outfit: '#3b6ea5' },
-    Elf:      { th: 'เอลฟ์',       hp: 80,  mp: 140, st: 80,  skin: '#fbe2cf', outfit: '#2e7d5b' },
-    Dwarf:    { th: 'คนแคระ',      hp: 100, mp: 60,  st: 140, skin: '#eab996', outfit: '#8c4a27' },
-    Beastkin: { th: 'มนุษย์สัตว์', hp: 150, mp: 50,  st: 100, skin: '#e0ae86', outfit: '#6e352c' }
+    Human:    { th: 'มนุษย์',      hp: 100, mp: 100, st: 100 },
+    Elf:      { th: 'เอลฟ์',       hp: 80,  mp: 140, st: 80  },
+    Dwarf:    { th: 'คนแคระ',      hp: 100, mp: 60,  st: 140 },
+    Beastkin: { th: 'มนุษย์สัตว์', hp: 150, mp: 50,  st: 100 }
   };
 
-  const HAIR_COLORS = ['#f2c97d', '#e8e6e1', '#4a8fb8', '#8c3b3b'];
-  const GENDERS = ['ชาย', 'หญิง'];
+  // โทนสีปรับโทนทรงผมจากสีน้ำตาลต้นฉบับ (hueRotate / saturate / brightness)
+  const HAIR_FILTERS = [
+    'none',
+    'hue-rotate(24deg) saturate(1.25) brightness(1.12)',
+    'brightness(0.45) contrast(1.15)',
+    'hue-rotate(-25deg) saturate(1.45) brightness(0.95)'
+  ];
 
   let draft = {
     race: 'Human',
-    genderIdx: 0,
+    faceIdx: 0,
     hairIdx: 0,
+    outfitIdx: 0,
     colorIdx: 0
   };
+
+  // โหลดชีตชิ้นส่วน human_parts.jpg แล้วลบพื้นหลังสีเขียวอัตโนมัติ (Chroma Key)
+  function initPartsSheet() {
+    sheetImg = new Image();
+    sheetImg.crossOrigin = 'anonymous';
+    sheetImg.onload = () => {
+      try {
+        const w = sheetImg.naturalWidth;
+        const h = sheetImg.naturalHeight;
+        cleanSheetCanvas = document.createElement('canvas');
+        cleanSheetCanvas.width = w;
+        cleanSheetCanvas.height = h;
+        const ctx = cleanSheetCanvas.getContext('2d');
+        ctx.drawImage(sheetImg, 0, 0, w, h);
+
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const data = imgData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+
+          // ตรวจจับพิกเซลพื้นหลังสีเขียว (#00FF00 และโทนสีเขียวสดรอบขอบ)
+          if (g > 135 && g > r * 1.25 && g > b * 1.25) {
+            data[i + 3] = 0;
+          } else if (g > 110 && g > r * 1.15 && g > b * 1.15) {
+            // ขอบรอยต่อสีเขียวลดความทึบและลดสีเขียวลงเพื่อไม่ให้เกิดขอบเขียวฟุ้ง
+            data[i + 1] = Math.min(r, b);
+            data[i + 3] = 90;
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        sheetReady = true;
+      } catch (err) {
+        sheetReady = false;
+      }
+      renderCreatorPreview();
+      renderSlots();
+    };
+    sheetImg.onerror = () => {
+      sheetReady = false;
+      renderCreatorPreview();
+    };
+    sheetImg.src = 'human_parts.jpg';
+  }
+
+  // วาดตัวละครแบบประกอบร่างบน Canvas ตามพิกัดคอลัมน์ของชีต
+  function drawComposedAvatar(targetCanvas, cfg) {
+    if (!targetCanvas) return;
+    const ctx = targetCanvas.getContext('2d');
+    const cw = targetCanvas.width;
+    const ch = targetCanvas.height;
+    ctx.clearRect(0, 0, cw, ch);
+
+    if (!sheetReady || !cleanSheetCanvas) {
+      ctx.fillStyle = 'rgba(255, 224, 150, 0.75)';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Loading...', cw / 2, ch / 2);
+      return;
+    }
+
+    const sw = cleanSheetCanvas.width;
+    const sh = cleanSheetCanvas.height;
+
+    // 1. วาดลำตัวพื้นฐาน (คอลัมน์ 1 ด้านซ้าย)
+    ctx.drawImage(
+      cleanSheetCanvas,
+      sw * 0.04, sh * 0.14, sw * 0.22, sh * 0.78,
+      cw * 0.22, ch * 0.14, cw * 0.56, ch * 0.78
+    );
+
+    // 2. วาดชุดนักผจญภัย (คอลัมน์ 4 ด้านขวา แบ่ง 4 ช่อง)
+    const oCol = cfg.outfitIdx % 2;
+    const oRow = Math.floor((cfg.outfitIdx % 4) / 2);
+    const ox = sw * (0.64 + oCol * 0.16);
+    const oy = sh * (0.14 + oRow * 0.38);
+    ctx.drawImage(
+      cleanSheetCanvas,
+      ox, oy, sw * 0.15, sh * 0.34,
+      cw * 0.26, ch * 0.44, cw * 0.48, ch * 0.44
+    );
+
+    // 3. วาดใบหน้า (คอลัมน์ 2 แบ่ง 4 ช่อง)
+    const fCol = cfg.faceIdx % 2;
+    const fRow = Math.floor((cfg.faceIdx % 4) / 2);
+    const fx = sw * (0.28 + fCol * 0.11);
+    const fy = sh * (0.14 + fRow * 0.38);
+    ctx.drawImage(
+      cleanSheetCanvas,
+      fx, fy, sw * 0.105, sh * 0.32,
+      cw * 0.30, ch * 0.15, cw * 0.40, ch * 0.34
+    );
+
+    // 4. วาดทรงผมทับบนหัว (คอลัมน์ 3 แบ่ง 4 ช่อง) + ปรับสีผม
+    const hCol = cfg.hairIdx % 2;
+    const hRow = Math.floor((cfg.hairIdx % 4) / 2);
+    const hx = sw * (0.47 + hCol * 0.085);
+    const hy = sh * (0.14 + hRow * 0.38);
+
+    ctx.save();
+    ctx.filter = HAIR_FILTERS[cfg.colorIdx] || 'none';
+    ctx.drawImage(
+      cleanSheetCanvas,
+      hx, hy, sw * 0.082, sh * 0.24,
+      cw * 0.31, ch * 0.13, cw * 0.38, ch * 0.25
+    );
+    ctx.restore();
+  }
 
   function playClickSound(pitch = 520) {
     try {
@@ -586,7 +703,7 @@
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
     loadCharacters();
-    renderCreatorPreview();
+    initPartsSheet();
   };
 
   function switchScene(sceneId) {
@@ -594,6 +711,8 @@
     document.getElementById(sceneId).classList.add('is-active');
     if (sceneId === 'sceneSelect') {
       renderSlots();
+    } else if (sceneId === 'sceneCreate') {
+      renderCreatorPreview();
     }
   }
 
@@ -642,77 +761,21 @@
     renderSlots();
   }
 
-  // สร้างภาพตัวละครอนิเมะแบบ SVG ตามเผ่า เพศ ทรงผม และสีผมที่เลือก
-  function buildAvatarSVG(cfg) {
-    const r = RACES[cfg.race] || RACES.Human;
-    const hair = HAIR_COLORS[cfg.colorIdx] || HAIR_COLORS[0];
-    const isFemale = cfg.genderIdx === 1;
-    const isDwarf = cfg.race === 'Dwarf';
-    const isElf = cfg.race === 'Elf';
-    const isBeast = cfg.race === 'Beastkin';
-
-    const bodyScale = isDwarf ? 'transform="translate(0,14) scale(1,0.88)"' : '';
-    const ears = isElf
-      ? `<polygon points="34,54 20,48 34,62" fill="${r.skin}"/><polygon points="86,54 100,48 86,62" fill="${r.skin}"/>`
-      : '';
-    const beastEars = isBeast
-      ? `<polygon points="36,36 30,14 48,28" fill="${hair}"/><polygon points="84,36 90,14 72,28" fill="${hair}"/>`
-      : '';
-    const beard = (isDwarf && !isFemale)
-      ? `<path d="M42,72 Q60,96 78,72 L72,88 Q60,98 48,88 Z" fill="${hair}"/>`
-      : '';
-
-    let backHair = '';
-    if (isFemale || cfg.hairIdx === 2) {
-      backHair = `<path d="M32,45 Q26,88 38,105 L82,105 Q94,88 88,45 Z" fill="${hair}"/>`;
-    }
-    let frontHair = `<path d="M34,48 Q38,24 60,24 Q82,24 86,48 Q74,36 60,42 Q46,36 34,48 Z" fill="${hair}"/>`;
-    if (cfg.hairIdx === 1) {
-      frontHair = `<path d="M33,50 L42,22 L54,38 L62,20 L72,38 L82,24 L87,50 Q60,38 33,50 Z" fill="${hair}"/>`;
-    } else if (cfg.hairIdx === 3) {
-      frontHair = `<path d="M34,52 Q60,20 86,52 L82,36 Q60,26 38,36 Z" fill="${hair}"/>`;
-    }
-
-    return `
-      <svg viewBox="0 0 120 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <g ${bodyScale}>
-          ${backHair}
-          ${beastEars}
-          ${ears}
-          <!-- ลำตัวและชุดนักล่า -->
-          <path d="M36,92 Q60,84 84,92 L92,144 L28,144 Z" fill="${r.outfit}" stroke="#23170e" stroke-width="2.5"/>
-          <path d="M48,90 L60,112 L72,90" fill="#d9b36c"/>
-          <!-- ส่วนหัว -->
-          <circle cx="60" cy="56" r="25" fill="${r.skin}" stroke="#23170e" stroke-width="2.2"/>
-          <!-- ดวงตา -->
-          <ellipse cx="50" cy="57" rx="3.2" ry="4" fill="#23170e"/>
-          <ellipse cx="70" cy="57" rx="3.2" ry="4" fill="#23170e"/>
-          <circle cx="51" cy="55.5" r="1.2" fill="#ffffff"/>
-          <circle cx="71" cy="55.5" r="1.2" fill="#ffffff"/>
-          <!-- ปาก -->
-          <path d="M55,69 Q60,73 65,69" fill="none" stroke="#6e3b2e" stroke-width="2" stroke-linecap="round"/>
-          ${beard}
-          ${frontHair}
-        </g>
-      </svg>
-    `;
-  }
-
   function renderSlots() {
     for (let i = 0; i < 4; i++) {
       const slotEl = document.querySelector('.slot-' + i);
       const badgeEl = document.getElementById('slotBadge' + i);
-      const avatarEl = document.getElementById('slotAvatar' + i);
+      const canvasEl = document.getElementById('slotCanvas' + i);
       if (selectedSlot === i) slotEl.classList.add('is-selected');
       else slotEl.classList.remove('is-selected');
 
       const char = characters[i];
       if (char) {
         const rInfo = RACES[char.race] || RACES.Human;
-        avatarEl.innerHTML = buildAvatarSVG(char);
+        drawComposedAvatar(canvasEl, char);
         badgeEl.innerHTML = `<div class="slot-char-badge"><strong>${escapeHtml(char.name)}</strong><span>${rInfo.th} Lv.${char.level || 1}</span></div>`;
       } else {
-        avatarEl.innerHTML = '';
+        if (canvasEl) canvasEl.getContext('2d').clearRect(0, 0, canvasEl.width, canvasEl.height);
         badgeEl.innerHTML = '';
       }
     }
@@ -756,8 +819,7 @@
       return;
     }
 
-    // รีเซ็ตค่าเริ่มต้นแล้วเปิดฉาก create.jpg
-    draft = { race: 'Human', genderIdx: 0, hairIdx: 0, colorIdx: 0 };
+    draft = { race: 'Human', faceIdx: 0, hairIdx: 0, outfitIdx: 0, colorIdx: 0 };
     document.getElementById('createCharNameInput').value = '';
     setRace('Human');
     setHairColor(0);
@@ -777,8 +839,9 @@
     renderCreatorPreview();
   }
 
-  function cycleGender(dir) {
-    draft.genderIdx = (draft.genderIdx + dir + GENDERS.length) % GENDERS.length;
+  function cycleFace(dir) {
+    draft.faceIdx = (draft.faceIdx + dir + 4) % 4;
+    draft.outfitIdx = draft.faceIdx;
     renderCreatorPreview();
   }
 
@@ -796,9 +859,9 @@
   }
 
   function renderCreatorPreview() {
-    document.getElementById('valGender').innerText = GENDERS[draft.genderIdx];
+    document.getElementById('valFace').innerText = 'ใบหน้า ' + (draft.faceIdx + 1);
     document.getElementById('valHair').innerText = 'ทรงที่ ' + (draft.hairIdx + 1);
-    document.getElementById('creatorAvatarStage').innerHTML = buildAvatarSVG(draft);
+    drawComposedAvatar(document.getElementById('creatorCanvas'), draft);
   }
 
   function saveCreatedCharacter(enterImmediately) {
@@ -813,8 +876,9 @@
     characters[selectedSlot] = {
       name: name,
       race: draft.race,
-      genderIdx: draft.genderIdx,
+      faceIdx: draft.faceIdx,
       hairIdx: draft.hairIdx,
+      outfitIdx: draft.outfitIdx,
       colorIdx: draft.colorIdx,
       level: 1,
       hp: r.hp,
