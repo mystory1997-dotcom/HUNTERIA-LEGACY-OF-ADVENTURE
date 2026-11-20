@@ -287,12 +287,12 @@
   .swatch-2 { left: 16.9%; background: #3b373c; }
   .swatch-3 { left: 19.3%; background: #a8423b; }
 
-  /* แคนวาสประกอบร่างตัวละคร MapleStory บนแท่นกลางจอ */
+  /* ปรับตำแหน่งแคนวาสให้ยืนอยู่บนแท่นกลางจอพอดี */
   .creator-avatar-canvas {
     position: absolute;
-    left: 42.5%;
-    top: 28.5%;
-    width: 15.0%;
+    left: 43.2%;
+    top: 39.5%;
+    width: 13.6%;
     aspect-ratio: 1 / 1;
     pointer-events: none;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.8));
@@ -515,7 +515,6 @@
     Beastkin: { th: 'มนุษย์สัตว์', hp: 150, mp: 50,  st: 100 }
   };
 
-  // โทนสีปรับโทนทรงผมจากสีน้ำตาลต้นฉบับ (hueRotate / saturate / brightness)
   const HAIR_FILTERS = [
     'none',
     'hue-rotate(24deg) saturate(1.25) brightness(1.12)',
@@ -531,7 +530,7 @@
     colorIdx: 0
   };
 
-  // โหลดชีตชิ้นส่วน human_parts.jpg แล้วลบพื้นหลังสีเขียวอัตโนมัติ (Chroma Key)
+  // โหลดชีต human_parts.jpg แล้วลบพื้นหลังสีเขียวอัตโนมัติ (Chroma Key)
   function initPartsSheet() {
     sheetImg = new Image();
     sheetImg.crossOrigin = 'anonymous';
@@ -553,13 +552,11 @@
           const g = data[i + 1];
           const b = data[i + 2];
 
-          // ตรวจจับพิกเซลพื้นหลังสีเขียว (#00FF00 และโทนสีเขียวสดรอบขอบ)
           if (g > 135 && g > r * 1.25 && g > b * 1.25) {
             data[i + 3] = 0;
           } else if (g > 110 && g > r * 1.15 && g > b * 1.15) {
-            // ขอบรอยต่อสีเขียวลดความทึบและลดสีเขียวลงเพื่อไม่ให้เกิดขอบเขียวฟุ้ง
             data[i + 1] = Math.min(r, b);
-            data[i + 3] = 90;
+            data[i + 3] = 85;
           }
         }
         ctx.putImageData(imgData, 0, 0);
@@ -577,7 +574,7 @@
     sheetImg.src = 'human_parts.jpg';
   }
 
-  // วาดตัวละครแบบประกอบร่างบน Canvas ตามพิกัดคอลัมน์ของชีต
+  // วาดตัวละครแบบประกอบร่างให้ตรงกับสัดส่วนของชีต human_parts.jpg จริง
   function drawComposedAvatar(targetCanvas, cfg) {
     if (!targetCanvas) return;
     const ctx = targetCanvas.getContext('2d');
@@ -596,47 +593,43 @@
     const sw = cleanSheetCanvas.width;
     const sh = cleanSheetCanvas.height;
 
-    // 1. วาดลำตัวพื้นฐาน (คอลัมน์ 1 ด้านซ้าย)
+    // 1. ลำตัวพื้นฐาน (ตัวซ้ายบนชีต ช่วง sx ~0.07-0.21, sy ~0.24-0.78)
+    const isFemale = cfg.faceIdx % 2 === 1;
+    const bodySx = isFemale ? sw * 0.215 : sw * 0.075;
     ctx.drawImage(
       cleanSheetCanvas,
-      sw * 0.04, sh * 0.14, sw * 0.22, sh * 0.78,
-      cw * 0.22, ch * 0.14, cw * 0.56, ch * 0.78
+      bodySx, sh * 0.24, sw * 0.135, sh * 0.54,
+      cw * 0.28, ch * 0.34, cw * 0.44, ch * 0.58
     );
 
-    // 2. วาดชุดนักผจญภัย (คอลัมน์ 4 ด้านขวา แบ่ง 4 ช่อง)
-    const oCol = cfg.outfitIdx % 2;
-    const oRow = Math.floor((cfg.outfitIdx % 4) / 2);
-    const ox = sw * (0.64 + oCol * 0.16);
-    const oy = sh * (0.14 + oRow * 0.38);
+    // 2. ชุดนักผจญภัย (แถว 3 ของกริดขวา 4 ชิ้นเรียงแนวนอน ช่วง sy ~0.51-0.72)
+    const oIdx = cfg.outfitIdx % 4;
+    const oColX = [0.51, 0.615, 0.735, 0.855][oIdx];
     ctx.drawImage(
       cleanSheetCanvas,
-      ox, oy, sw * 0.15, sh * 0.34,
-      cw * 0.26, ch * 0.44, cw * 0.48, ch * 0.44
+      sw * oColX, sh * 0.515, sw * 0.105, sh * 0.20,
+      cw * 0.30, ch * 0.54, cw * 0.40, ch * 0.28
     );
 
-    // 3. วาดใบหน้า (คอลัมน์ 2 แบ่ง 4 ช่อง)
-    const fCol = cfg.faceIdx % 2;
-    const fRow = Math.floor((cfg.faceIdx % 4) / 2);
-    const fx = sw * (0.28 + fCol * 0.11);
-    const fy = sh * (0.14 + fRow * 0.38);
+    // 3. ใบหน้าหัวโล้น (แถว 1 ของกริดขวา 4 ชิ้นเรียงแนวนอน ช่วง sy ~0.05-0.25)
+    const fIdx = cfg.faceIdx % 4;
+    const fColX = [0.505, 0.615, 0.730, 0.845][fIdx];
     ctx.drawImage(
       cleanSheetCanvas,
-      fx, fy, sw * 0.105, sh * 0.32,
-      cw * 0.30, ch * 0.15, cw * 0.40, ch * 0.34
+      sw * fColX, sh * 0.055, sw * 0.105, sh * 0.19,
+      cw * 0.30, ch * 0.12, cw * 0.40, ch * 0.32
     );
 
-    // 4. วาดทรงผมทับบนหัว (คอลัมน์ 3 แบ่ง 4 ช่อง) + ปรับสีผม
-    const hCol = cfg.hairIdx % 2;
-    const hRow = Math.floor((cfg.hairIdx % 4) / 2);
-    const hx = sw * (0.47 + hCol * 0.085);
-    const hy = sh * (0.14 + hRow * 0.38);
+    // 4. ทรงผม (แถว 2 ของกริดขวา 4 ชิ้นเรียงแนวนอน ช่วง sy ~0.27-0.49) + ปรับสีผม
+    const hIdx = cfg.hairIdx % 4;
+    const hColX = [0.505, 0.615, 0.730, 0.845][hIdx];
 
     ctx.save();
     ctx.filter = HAIR_FILTERS[cfg.colorIdx] || 'none';
     ctx.drawImage(
       cleanSheetCanvas,
-      hx, hy, sw * 0.082, sh * 0.24,
-      cw * 0.31, ch * 0.13, cw * 0.38, ch * 0.25
+      sw * hColX, sh * 0.275, sw * 0.11, sh * 0.21,
+      cw * 0.295, ch * 0.10, cw * 0.41, ch * 0.30
     );
     ctx.restore();
   }
