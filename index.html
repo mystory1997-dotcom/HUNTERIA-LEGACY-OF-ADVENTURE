@@ -55,6 +55,7 @@
   #sceneLogin { background-image: url('login.jpg'); }
   #sceneSelect { background-image: url('select.jpg'); }
   #sceneCreate { background-image: url('create.jpg'); }
+  #sceneWorld { background: #1d140e; }
 
   .game-btn {
     position: absolute;
@@ -244,12 +245,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .val-style { top: 69.2%; }
+  .val-gender { top: 69.2%; }
   .val-aura { top: 76.2%; }
 
   .arrow-btn { width: 2.3%; height: 3.8%; border-radius: 6px; }
-  .style-prev { left: 9.4%; top: 69.1%; }
-  .style-next { left: 21.3%; top: 69.1%; }
+  .gender-prev { left: 9.4%; top: 69.1%; }
+  .gender-next { left: 21.3%; top: 69.1%; }
   .aura-prev { left: 9.4%; top: 76.1%; }
   .aura-next { left: 21.3%; top: 76.1%; }
 
@@ -317,6 +318,124 @@
   .hotspot-confirm-char { left: 79.3%; top: 53.6%; width: 16.7%; height: 7.4%; border-radius: 999px; }
   .hotspot-create-start { left: 79.3%; top: 62.6%; width: 16.7%; height: 8.6%; border-radius: 999px; }
   .hotspot-create-back { left: 4.5%; top: 88.2%; width: 11.4%; height: 6.2%; border-radius: 999px; }
+
+  /* ================= ฉาก 4: แมพบ้านตัวเอง (MY HOME) ================= */
+  #worldCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .world-hud-top {
+    position: absolute;
+    top: 2.6%;
+    left: 2.4%;
+    background: linear-gradient(180deg, rgba(46, 31, 20, 0.92), rgba(26, 17, 11, 0.92));
+    border: 1.5px solid #c89d54;
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: #fff2d6;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.75);
+    pointer-events: none;
+  }
+  .world-hud-name {
+    font-size: clamp(11px, 1.25vw, 16px);
+    font-weight: 800;
+    color: #ffd27d;
+    margin-bottom: 4px;
+  }
+  .world-hud-bars {
+    display: flex;
+    gap: 10px;
+    font-size: clamp(9px, 0.95vw, 12px);
+    color: #ebd7b2;
+  }
+  .hud-pill {
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(212, 163, 89, 0.35);
+  }
+
+  .world-location-banner {
+    position: absolute;
+    top: 2.6%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(24, 15, 10, 0.85);
+    border: 1px solid #d4a359;
+    border-radius: 999px;
+    padding: 5px 18px;
+    color: #ffe4a3;
+    font-size: clamp(10px, 1.1vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    pointer-events: none;
+  }
+
+  .world-btn-exit {
+    position: absolute;
+    top: 2.6%;
+    right: 2.4%;
+    background: linear-gradient(180deg, #4b3321, #2c1d12);
+    border: 1.5px solid #c89d54;
+    border-radius: 8px;
+    padding: 7px 14px;
+    color: #ffd27d;
+    font-size: clamp(9.5px, 1vw, 13px);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+  }
+  .world-btn-exit:active { transform: scale(0.95); }
+
+  /* จอยปุ่มเดิน D-Pad สำหรับแตะบนมือถือ */
+  .dpad-container {
+    position: absolute;
+    left: 3.5%;
+    bottom: 5.5%;
+    width: clamp(105px, 13vw, 150px);
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 4px;
+    z-index: 10;
+  }
+  .dpad-btn {
+    background: rgba(34, 22, 14, 0.72);
+    border: 1.5px solid rgba(212, 163, 89, 0.65);
+    border-radius: 10px;
+    color: #ffd982;
+    font-size: clamp(13px, 1.5vw, 19px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .dpad-btn:active, .dpad-btn.is-active {
+    background: rgba(212, 163, 89, 0.45);
+    border-color: #fff2d6;
+    transform: scale(0.94);
+  }
+  .dpad-up    { grid-column: 2; grid-row: 1; }
+  .dpad-left  { grid-column: 1; grid-row: 2; }
+  .dpad-right { grid-column: 3; grid-row: 2; }
+  .dpad-down  { grid-column: 2; grid-row: 3; }
+
+  .world-hint {
+    position: absolute;
+    right: 3.2%;
+    bottom: 4.5%;
+    background: rgba(22, 14, 9, 0.78);
+    border: 1px solid rgba(200, 157, 84, 0.45);
+    border-radius: 8px;
+    padding: 5px 12px;
+    color: #d8c39e;
+    font-size: clamp(8.5px, 0.9vw, 12px);
+    pointer-events: none;
+  }
 
   /* ================= MODAL ================= */
   .modal-overlay {
@@ -405,22 +524,22 @@
 
     <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="240" height="240"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas0" width="220" height="220"></canvas>
       <div id="slotBadge0"></div>
     </div>
     <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="240" height="240"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas1" width="220" height="220"></canvas>
       <div id="slotBadge1"></div>
     </div>
     <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="240" height="240"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas2" width="220" height="220"></canvas>
       <div id="slotBadge2"></div>
     </div>
     <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
       <div class="slot-rune"></div>
-      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="240" height="240"></canvas>
+      <canvas class="slot-avatar-canvas" id="slotCanvas3" width="220" height="220"></canvas>
       <div id="slotBadge3"></div>
     </div>
 
@@ -440,9 +559,9 @@
     <button type="button" class="game-btn race-hotspot race-dwarf" data-race="Dwarf" onclick="setRace('Dwarf')"></button>
     <button type="button" class="game-btn race-hotspot race-beastkin" data-race="Beastkin" onclick="setRace('Beastkin')"></button>
 
-    <button type="button" class="game-btn arrow-btn style-prev" onclick="cycleStyle(-1)"></button>
-    <div class="fantasy-value-text val-style" id="valStyle">รูปลักษณ์ที่ 1</div>
-    <button type="button" class="game-btn arrow-btn style-next" onclick="cycleStyle(1)"></button>
+    <button type="button" class="game-btn arrow-btn gender-prev" onclick="cycleGender(-1)"></button>
+    <div class="fantasy-value-text val-gender" id="valGender">ชาย (Male)</div>
+    <button type="button" class="game-btn arrow-btn gender-next" onclick="cycleGender(1)"></button>
 
     <button type="button" class="game-btn arrow-btn aura-prev" onclick="cycleAura(-1)"></button>
     <div class="fantasy-value-text val-aura" id="valAura">ออร่าทอง</div>
@@ -453,7 +572,7 @@
     <button type="button" class="game-btn swatch-btn swatch-2" onclick="setSwatch(2)"></button>
     <button type="button" class="game-btn swatch-btn swatch-3" onclick="setSwatch(3)"></button>
 
-    <canvas class="creator-avatar-canvas" id="creatorCanvas" width="260" height="260"></canvas>
+    <canvas class="creator-avatar-canvas" id="creatorCanvas" width="240" height="240"></canvas>
 
     <div class="stat-circle-val stat-hp" id="statHpVal">100</div>
     <div class="stat-circle-val stat-mp" id="statMpVal">100</div>
@@ -463,6 +582,33 @@
     <button type="button" class="game-btn blue-glow hotspot-confirm-char" data-action="confirmCreate" aria-label="CONFIRM CHARACTER"></button>
     <button type="button" class="game-btn blue-glow hotspot-create-start" data-action="confirmAndStart" aria-label="START GAME"></button>
     <button type="button" class="game-btn hotspot-create-back" data-action="backToSelect" aria-label="BACK"></button>
+  </div>
+
+  <!-- ฉากที่ 4: แมพบ้านตัวเอง (MY HOME) -->
+  <div class="scene" id="sceneWorld">
+    <canvas id="worldCanvas" width="1280" height="720"></canvas>
+
+    <div class="world-hud-top">
+      <div class="world-hud-name" id="worldHudName">นักล่า Lv.1</div>
+      <div class="world-hud-bars">
+        <span class="hud-pill" id="worldHudHp">HP: 100/100</span>
+        <span class="hud-pill" id="worldHudMp">MP: 100/100</span>
+        <span class="hud-pill" id="worldHudSt">ST: 100/100</span>
+      </div>
+    </div>
+
+    <div class="world-location-banner">บ้านของฉัน — เขตที่พักนักล่าอาร์คาเดีย</div>
+
+    <button type="button" class="world-btn-exit" onclick="exitWorldToSelect()">สลับตัวละคร</button>
+
+    <div class="dpad-container">
+      <button type="button" class="dpad-btn dpad-up" data-dir="up">▲</button>
+      <button type="button" class="dpad-btn dpad-left" data-dir="left">◀</button>
+      <button type="button" class="dpad-btn dpad-right" data-dir="right">▶</button>
+      <button type="button" class="dpad-btn dpad-down" data-dir="down">▼</button>
+    </div>
+
+    <div class="world-hint">ใช้ปุ่มทิศทางซ้ายล่าง หรือปุ่ม WASD / ลูกศร เพื่อเดินสำรวจบ้าน</div>
   </div>
 
   <!-- Modal -->
@@ -483,23 +629,7 @@
   let audioCtx = null;
   let selectedSlot = null;
   let characters = [null, null, null, null];
-
-  const HUMAN_STYLES = [
-    { file: 'human_1.jpg', label: 'รูปลักษณ์ที่ 1' },
-    { file: 'human_2.jpg', label: 'รูปลักษณ์ที่ 2' },
-    { file: 'human_3.jpg', label: 'รูปลักษณ์ที่ 3' },
-    { file: 'human_4.jpg', label: 'รูปลักษณ์ที่ 4' },
-    { file: 'human_5.jpg', label: 'รูปลักษณ์ที่ 5' },
-    { file: 'human_6.jpg', label: 'รูปลักษณ์ที่ 6' },
-    { file: 'human_7.jpg', label: 'รูปลักษณ์ที่ 7' }
-  ];
-
-  const AURAS = [
-    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.75)' },
-    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.75)' },
-    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.75)' },
-    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.75)' }
-  ];
+  let activeCharacter = null;
 
   const RACES = {
     Human:    { th: 'มนุษย์',      hp: 100, mp: 100, st: 100 },
@@ -508,22 +638,27 @@
     Beastkin: { th: 'มนุษย์สัตว์', hp: 150, mp: 50,  st: 100 }
   };
 
-  const cleanedCache = {};
+  const GENDERS = ['ชาย (Male)', 'หญิง (Female)'];
+
+  const AURAS = [
+    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.75)' },
+    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.75)' },
+    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.75)' },
+    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.75)' }
+  ];
 
   let draft = {
     race: 'Human',
-    styleIdx: 0,
+    genderIdx: 0,
     auraIdx: 0
   };
 
-  function loadCleanedCharacter(styleIdx, onDone) {
-    const info = HUMAN_STYLES[styleIdx] || HUMAN_STYLES[0];
-    const key = info.file;
-    if (cleanedCache[key]) {
-      if (onDone) onDone(cleanedCache[key]);
-      return;
-    }
+  // ================= โหลดและตัดพื้นหลังเขียวของ Sprite Sheet =================
+  let humanMaleSheet = null;
+  let sheetReady = false;
+  const TOTAL_SHEET_COLS = 9; // 0..5 = ท่าเดิน 6 เฟรม, 6..8 = ท่าโจมตี 3 เฟรม
 
+  function initSpriteSheet() {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
@@ -548,46 +683,58 @@
           }
         }
         ctx.putImageData(imgData, 0, 0);
-        cleanedCache[key] = c;
+        humanMaleSheet = c;
+        sheetReady = true;
       } catch (e) {
-        cleanedCache[key] = img;
+        humanMaleSheet = img;
+        sheetReady = true;
       }
-      if (onDone) onDone(cleanedCache[key]);
+      renderCreatorPreview();
+      renderSlots();
     };
     img.onerror = () => {
-      if (onDone) onDone(null);
+      sheetReady = false;
+      renderCreatorPreview();
     };
-    img.src = key;
+    img.src = 'human_m_sheet.jpg';
   }
 
-  function drawPresetCharacter(canvas, cfg) {
+  // วาดเฟรมเดี่ยวจาก Sprite Sheet ลงบนแคนวาสตัวอย่าง (ใช้เฟรมที่ 0 เป็นท่ายืน)
+  function drawPreviewFrame(canvas, cfg) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const cw = canvas.width;
     const ch = canvas.height;
     ctx.clearRect(0, 0, cw, ch);
 
-    const idx = (cfg.styleIdx || 0) % HUMAN_STYLES.length;
     const aura = AURAS[(cfg.auraIdx || 0) % AURAS.length];
 
-    loadCleanedCharacter(idx, (src) => {
-      ctx.clearRect(0, 0, cw, ch);
-      if (!src) {
-        ctx.fillStyle = 'rgba(255, 224, 150, 0.8)';
-        ctx.font = 'bold 13px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(HUMAN_STYLES[idx].label, cw / 2, ch / 2);
-        return;
-      }
+    if (!sheetReady || !humanMaleSheet) {
+      ctx.fillStyle = 'rgba(255, 224, 150, 0.85)';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Loading Sprite...', cw / 2, ch / 2);
+      return;
+    }
 
-      ctx.save();
-      ctx.shadowColor = aura.glow;
-      ctx.shadowBlur = 14;
-      ctx.drawImage(src, cw * 0.08, ch * 0.04, cw * 0.84, ch * 0.92);
-      ctx.restore();
-    });
+    const fw = humanMaleSheet.width / TOTAL_SHEET_COLS;
+    const fh = humanMaleSheet.height;
+    // แถวตัวละครอยู่ช่วงกึ่งกลางแนวตั้งของภาพ 1:1 (sy ~ 0.30*fh ถึง 0.70*fh)
+    const sy = fh * 0.32;
+    const sh = fh * 0.36;
+
+    ctx.save();
+    ctx.shadowColor = aura.glow;
+    ctx.shadowBlur = 14;
+    ctx.drawImage(
+      humanMaleSheet,
+      0, sy, fw, sh,
+      cw * 0.14, ch * 0.08, cw * 0.72, ch * 0.84
+    );
+    ctx.restore();
   }
 
+  // ================= เสียงและปุ่มกด UI =================
   function playClickSound(pitch = 520) {
     try {
       if (!audioCtx) {
@@ -650,16 +797,21 @@
     const savedGmail = localStorage.getItem('hunteria_gmail');
     updateAccountStatus(savedGmail);
     loadCharacters();
-    renderCreatorPreview();
+    initSpriteSheet();
+    setupWorldControls();
   };
 
   function switchScene(sceneId) {
     document.querySelectorAll('.scene').forEach(s => s.classList.remove('is-active'));
     document.getElementById(sceneId).classList.add('is-active');
     if (sceneId === 'sceneSelect') {
+      stopWorldLoop();
       renderSlots();
     } else if (sceneId === 'sceneCreate') {
+      stopWorldLoop();
       renderCreatorPreview();
+    } else if (sceneId === 'sceneWorld') {
+      startWorldLoop();
     }
   }
 
@@ -719,7 +871,7 @@
       const char = characters[i];
       if (char) {
         const rInfo = RACES[char.race] || RACES.Human;
-        drawPresetCharacter(canvasEl, char);
+        drawPreviewFrame(canvasEl, char);
         badgeEl.innerHTML = `<div class="slot-char-badge"><strong>${escapeHtml(char.name)}</strong><span>${rInfo.th} Lv.${char.level || 1}</span></div>`;
       } else {
         if (canvasEl) canvasEl.getContext('2d').clearRect(0, 0, canvasEl.width, canvasEl.height);
@@ -753,20 +905,11 @@
 
     const existing = characters[selectedSlot];
     if (existing) {
-      const rInfo = RACES[existing.race] || RACES.Human;
-      showPopup(
-        'เข้าสู่โลก HUNTERIA',
-        `ตัวละคร: ${existing.name} (เผ่า${rInfo.th} Lv.1)\nHP: ${rInfo.hp} | MP: ${rInfo.mp} | ST: ${rInfo.st}\n\nกำลังเตรียมเข้าสู่เมืองอาร์คาเดียและหลุมดันเจี้ยน!`,
-        '',
-        `
-          <button type="button" class="modal-btn" onclick="closePopup()">ตกลง</button>
-          <button type="button" class="modal-btn modal-btn-secondary" onclick="deleteCharacter(${selectedSlot})">ลบตัวละคร</button>
-        `
-      );
+      enterHomeMap(existing);
       return;
     }
 
-    draft = { race: 'Human', styleIdx: 0, auraIdx: 0 };
+    draft = { race: 'Human', genderIdx: 0, auraIdx: 0 };
     document.getElementById('createCharNameInput').value = '';
     setRace('Human');
     setSwatch(0);
@@ -786,9 +929,8 @@
     renderCreatorPreview();
   }
 
-  function cycleStyle(dir) {
-    const total = HUMAN_STYLES.length;
-    draft.styleIdx = (draft.styleIdx + dir + total) % total;
+  function cycleGender(dir) {
+    draft.genderIdx = (draft.genderIdx + dir + GENDERS.length) % GENDERS.length;
     renderCreatorPreview();
   }
 
@@ -810,9 +952,9 @@
   }
 
   function renderCreatorPreview() {
-    document.getElementById('valStyle').innerText = HUMAN_STYLES[draft.styleIdx].label;
+    document.getElementById('valGender').innerText = GENDERS[draft.genderIdx];
     document.getElementById('valAura').innerText = AURAS[draft.auraIdx].name;
-    drawPresetCharacter(document.getElementById('creatorCanvas'), draft);
+    drawPreviewFrame(document.getElementById('creatorCanvas'), draft);
   }
 
   function saveCreatedCharacter(enterImmediately) {
@@ -824,34 +966,366 @@
     }
 
     const r = RACES[draft.race];
-    characters[selectedSlot] = {
+    const newChar = {
       name: name,
       race: draft.race,
-      styleIdx: draft.styleIdx,
+      genderIdx: draft.genderIdx,
       auraIdx: draft.auraIdx,
       level: 1,
       hp: r.hp,
       mp: r.mp,
       st: r.st
     };
+    characters[selectedSlot] = newChar;
     saveCharacters();
     playClickSound(760);
-    switchScene('sceneSelect');
 
-    if (enterImmediately) {
-      showPopup('เริ่มการผจญภัย!', `นักล่า "${name}" (เผ่า${r.th})\nHP ${r.hp} | MP ${r.mp} | ST ${r.st}\nพร้อมออกสำรวจหลุมดันเจี้ยนอาร์คาเดียแล้ว!`);
+    // เมื่อสร้างตัวละครเสร็จ เข้าไปโผล่ในแมพบ้านตัวเองทันที
+    enterHomeMap(newChar);
+  }
+
+  // ================= ระบบแมพบ้านตัวเอง (MY HOME MAP) =================
+  let worldAnimId = null;
+  let lastFrameTime = 0;
+
+  const player = {
+    x: 640,
+    y: 460,
+    speed: 230,
+    facing: 1,       // 1 = หันขวา, -1 = หันซ้าย
+    walkFrame: 0,    // ใช้เฟรม 0..5 จาก human_m_sheet.jpg
+    frameTimer: 0,
+    isMoving: false,
+    idleBob: 0
+  };
+
+  const moveInput = { up: false, down: false, left: false, right: false };
+
+  function enterHomeMap(charData) {
+    activeCharacter = charData;
+    const rInfo = RACES[charData.race] || RACES.Human;
+
+    document.getElementById('worldHudName').innerText = `${charData.name} • เผ่า${rInfo.th} Lv.${charData.level || 1}`;
+    document.getElementById('worldHudHp').innerText = `HP: ${charData.hp}/${charData.hp}`;
+    document.getElementById('worldHudMp').innerText = `MP: ${charData.mp}/${charData.mp}`;
+    document.getElementById('worldHudSt').innerText = `ST: ${charData.st}/${charData.st}`;
+
+    // จุดเกิดกลางห้องหน้าพรมในบ้านตัวเอง
+    player.x = 640;
+    player.y = 465;
+    player.facing = 1;
+    player.walkFrame = 0;
+    player.isMoving = false;
+
+    switchScene('sceneWorld');
+  }
+
+  function exitWorldToSelect() {
+    playClickSound(480);
+    switchScene('sceneSelect');
+  }
+
+  function setupWorldControls() {
+    // คีย์บอร์ด WASD และปุ่มลูกศร
+    window.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') moveInput.up = true;
+      if (k === 's' || k === 'arrowdown') moveInput.down = true;
+      if (k === 'a' || k === 'arrowleft') moveInput.left = true;
+      if (k === 'd' || k === 'arrowright') moveInput.right = true;
+    });
+    window.addEventListener('keyup', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') moveInput.up = false;
+      if (k === 's' || k === 'arrowdown') moveInput.down = false;
+      if (k === 'a' || k === 'arrowleft') moveInput.left = false;
+      if (k === 'd' || k === 'arrowright') moveInput.right = false;
+    });
+
+    // จอยทิศทางบนหน้าจอสำหรับมือถือ
+    document.querySelectorAll('.dpad-btn').forEach(btn => {
+      const dir = btn.dataset.dir;
+      const press = (e) => {
+        e.preventDefault();
+        moveInput[dir] = true;
+        btn.classList.add('is-active');
+      };
+      const release = (e) => {
+        e.preventDefault();
+        moveInput[dir] = false;
+        btn.classList.remove('is-active');
+      };
+      btn.addEventListener('pointerdown', press);
+      btn.addEventListener('pointerup', release);
+      btn.addEventListener('pointerleave', release);
+      btn.addEventListener('pointercancel', release);
+    });
+  }
+
+  function startWorldLoop() {
+    stopWorldLoop();
+    lastFrameTime = performance.now();
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - lastFrameTime) / 1000);
+      lastFrameTime = now;
+      updateHomeWorld(dt);
+      renderHomeWorld();
+      worldAnimId = requestAnimationFrame(tick);
+    };
+    worldAnimId = requestAnimationFrame(tick);
+  }
+
+  function stopWorldLoop() {
+    if (worldAnimId) {
+      cancelAnimationFrame(worldAnimId);
+      worldAnimId = null;
+    }
+    moveInput.up = moveInput.down = moveInput.left = moveInput.right = false;
+  }
+
+  function updateHomeWorld(dt) {
+    let vx = 0;
+    let vy = 0;
+    if (moveInput.left)  vx -= 1;
+    if (moveInput.right) vx += 1;
+    if (moveInput.up)    vy -= 0.78;
+    if (moveInput.down)  vy += 0.78;
+
+    const len = Math.hypot(vx, vy);
+    player.isMoving = len > 0;
+
+    if (player.isMoving) {
+      vx /= len;
+      vy /= len;
+
+      let nextX = player.x + vx * player.speed * dt;
+      let nextY = player.y + vy * player.speed * dt;
+
+      // ขอบเขตพื้นห้องในบ้านตัวเอง
+      nextX = Math.max(195, Math.min(1085, nextX));
+      nextY = Math.max(325, Math.min(625, nextY));
+
+      // กันชนเฟอร์นิเจอร์ในห้อง (เตียงซ้ายบน, หีบขวาบน)
+      const hitBed = (nextX < 395 && nextY < 430);
+      const hitChest = (nextX > 905 && nextY < 410);
+      if (!hitBed && !hitChest) {
+        player.x = nextX;
+        player.y = nextY;
+      }
+
+      if (Math.abs(vx) > 0.05) {
+        player.facing = vx < 0 ? -1 : 1;
+      }
+
+      // เล่นแอนิเมชันเดิน 6 เฟรม (0..5)
+      player.frameTimer += dt;
+      if (player.frameTimer >= 0.095) {
+        player.frameTimer = 0;
+        player.walkFrame = (player.walkFrame + 1) % 6;
+      }
+      player.idleBob = 0;
     } else {
-      showPopup('สร้างตัวละครสำเร็จ', `บันทึก "${name}" (เผ่า${r.th}) ลงในแท่นที่ ${selectedSlot + 1} เรียบร้อยแล้ว`);
+      player.walkFrame = 0;
+      player.frameTimer = 0;
+      player.idleBob += dt * 3;
     }
   }
 
-  function deleteCharacter(idx) {
-    characters[idx] = null;
-    saveCharacters();
-    renderSlots();
-    closePopup();
+  function renderHomeWorld() {
+    const canvas = document.getElementById('worldCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = 1280;
+    const H = 720;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. ผนังไม้ห้องบ้านตัวเอง
+    const wallGrad = ctx.createLinearGradient(0, 80, 0, 310);
+    wallGrad.addColorStop(0, '#3a2416');
+    wallGrad.addColorStop(1, '#583822');
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(140, 90, 1000, 220);
+
+    // คานไม้ประดับผนัง
+    ctx.fillStyle = '#2b190e';
+    for (let x = 140; x <= 1140; x += 200) {
+      ctx.fillRect(x - 10, 90, 20, 220);
+    }
+    ctx.fillRect(140, 90, 1000, 22);
+    ctx.fillRect(140, 296, 1000, 16);
+
+    // หน้าต่างแสงแดดส่องเข้ามา
+    drawWindow(ctx, 410, 145);
+    drawWindow(ctx, 810, 145);
+
+    // เตาผิงกลางผนัง
+    drawFireplace(ctx, 640, 210);
+
+    // 2. พื้นไม้กระดาน
+    const floorGrad = ctx.createLinearGradient(0, 310, 0, 660);
+    floorGrad.addColorStop(0, '#7c5032');
+    floorGrad.addColorStop(1, '#5c3921');
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(140, 310, 1000, 345);
+
+    // เส้นร่องแผ่นไม้พื้น
+    ctx.strokeStyle = 'rgba(35, 19, 9, 0.35)';
+    ctx.lineWidth = 2;
+    for (let y = 345; y < 655; y += 36) {
+      ctx.beginPath();
+      ctx.moveTo(140, y);
+      ctx.lineTo(1140, y);
+      ctx.stroke();
+    }
+
+    // กรอบกำแพงรอบห้อง
+    ctx.strokeStyle = '#24140a';
+    ctx.lineWidth = 14;
+    ctx.strokeRect(140, 90, 1000, 565);
+
+    // พรมวงรีกลางห้อง
+    ctx.save();
+    ctx.fillStyle = '#7e2626';
+    ctx.beginPath();
+    ctx.ellipse(640, 475, 190, 82, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#d4a359';
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.restore();
+
+    // ประตูทางออกด้านล่าง
+    ctx.fillStyle = '#3b2212';
+    ctx.fillRect(585, 636, 110, 22);
+    ctx.fillStyle = '#ffd982';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('ทางออกสู่เมืองอาร์คาเดีย', 640, 678);
+
+    // 3. เฟอร์นิเจอร์: เตียงนอนมุมซ้ายบน & หีบเก็บของมุมขวาบน
+    drawBed(ctx, 185, 295);
+    drawStorageChest(ctx, 945, 315);
+
+    // 4. วาดตัวละครผู้เล่น
+    drawWorldPlayer(ctx);
   }
 
+  function drawWindow(ctx, x, y) {
+    ctx.fillStyle = '#8fd3ff';
+    ctx.fillRect(x - 42, y, 84, 88);
+    ctx.strokeStyle = '#2b190e';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(x - 42, y, 84, 88);
+    ctx.beginPath();
+    ctx.moveTo(x, y); ctx.lineTo(x, y + 88);
+    ctx.moveTo(x - 42, y + 44); ctx.lineTo(x + 42, y + 44);
+    ctx.stroke();
+  }
+
+  function drawFireplace(ctx, cx, topY) {
+    ctx.fillStyle = '#4a4542';
+    ctx.fillRect(cx - 58, topY, 116, 102);
+    ctx.fillStyle = '#1b1411';
+    ctx.beginPath();
+    ctx.arc(cx, topY + 72, 32, Math.PI, 0);
+    ctx.lineTo(cx + 32, topY + 102);
+    ctx.lineTo(cx - 32, topY + 102);
+    ctx.fill();
+
+    // เปลวไฟอุ่นๆ
+    ctx.fillStyle = '#ff7b29';
+    ctx.beginPath();
+    ctx.arc(cx, topY + 84, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffd54f';
+    ctx.beginPath();
+    ctx.arc(cx, topY + 88, 9, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawBed(ctx, x, y) {
+    // โครงเตียงไม้
+    ctx.fillStyle = '#472916';
+    ctx.fillRect(x, y, 185, 115);
+    // ฟูกและผ้าห่ม
+    ctx.fillStyle = '#e8dcc5';
+    ctx.fillRect(x + 12, y + 12, 160, 90);
+    ctx.fillStyle = '#335c7d';
+    ctx.fillRect(x + 56, y + 12, 116, 90);
+    // หมอน
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 18, y + 24, 32, 64);
+    ctx.strokeStyle = '#24140a';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, 185, 115);
+  }
+
+  function drawStorageChest(ctx, x, y) {
+    ctx.fillStyle = '#6e4221';
+    ctx.fillRect(x, y, 110, 68);
+    ctx.strokeStyle = '#d4a359';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(x, y, 110, 68);
+    ctx.fillStyle = '#ffd27d';
+    ctx.fillRect(x + 47, y + 26, 16, 18);
+  }
+
+  function drawWorldPlayer(ctx) {
+    const aura = activeCharacter ? AURAS[(activeCharacter.auraIdx || 0) % AURAS.length] : AURAS[0];
+    const bobOffset = player.isMoving ? 0 : Math.sin(player.idleBob) * 2;
+
+    // เงาใต้เท้า
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+    ctx.beginPath();
+    ctx.ellipse(player.x, player.y, 34, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(player.x, player.y + bobOffset);
+    ctx.scale(player.facing, 1);
+
+    ctx.shadowColor = aura.glow;
+    ctx.shadowBlur = 12;
+
+    if (sheetReady && humanMaleSheet) {
+      const fw = humanMaleSheet.width / TOTAL_SHEET_COLS;
+      const fh = humanMaleSheet.height;
+      const sx = player.walkFrame * fw;
+      const sy = fh * 0.32;
+      const sh = fh * 0.36;
+
+      // วาดให้ฝ่าเท้าตัวละครยืนแตะจุด (0, 0) พอดี
+      ctx.drawImage(
+        humanMaleSheet,
+        sx, sy, fw, sh,
+        -56, -112, 112, 118
+      );
+    } else {
+      ctx.fillStyle = '#ffd27d';
+      ctx.beginPath();
+      ctx.arc(0, -45, 24, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // ป้ายชื่อบนหัวตัวละคร
+    if (activeCharacter) {
+      ctx.save();
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(20, 12, 7, 0.75)';
+      const textW = ctx.measureText(activeCharacter.name).width + 16;
+      ctx.fillRect(player.x - textW / 2, player.y - 138, textW, 22);
+      ctx.fillStyle = '#ffe7ad';
+      ctx.fillText(activeCharacter.name, player.x, player.y - 122);
+      ctx.restore();
+    }
+  }
+
+  // ================= ระบบ Modal & Gmail =================
   function openGmailLogin() {
     const lastGmail = localStorage.getItem('hunteria_gmail') || '';
     const extraHtml = `
