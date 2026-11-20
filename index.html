@@ -20,18 +20,44 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    width: 100vw;
+    height: 100dvh;
     overflow: hidden;
   }
 
   .game-screen {
     position: relative;
-    width: 100vw;
-    max-width: 1280px;
-    aspect-ratio: 16 / 9;
+    width: min(100vw, calc(100dvh * 16 / 9));
+    height: min(100dvh, calc(100vw * 9 / 16));
     background: #140f0c;
     box-shadow: 0 0 40px rgba(0,0,0,0.95);
     overflow: hidden;
+  }
+
+  /* ปุ่ม Fullscreen มุมขวาบนของจอเกม */
+  .fullscreen-toggle-btn {
+    position: absolute;
+    top: 1.6%;
+    right: 1.5%;
+    z-index: 25;
+    background: linear-gradient(180deg, rgba(48, 32, 20, 0.9), rgba(24, 15, 9, 0.92));
+    border: 1.5px solid rgba(212, 163, 89, 0.8);
+    border-radius: 8px;
+    padding: 5px 11px;
+    color: #ffd982;
+    font-size: clamp(9px, 0.92vw, 12px);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.75);
+    transition: transform 0.14s ease, filter 0.14s ease, border-color 0.14s ease;
+  }
+  .fullscreen-toggle-btn:hover {
+    filter: brightness(1.12);
+    border-color: #fff0c2;
+  }
+  .fullscreen-toggle-btn:active {
+    transform: scale(0.94);
   }
 
   .scene {
@@ -95,9 +121,9 @@
   /* ================= ฉาก 1: LOGIN ================= */
   .account-status {
     position: absolute;
-    left: 78.8%; top: 26.8%; width: 17.8%;
+    left: 78.8%; top: 30.2%; width: 17.8%;
     text-align: center;
-    font-size: clamp(9px, 0.9vw, 12px);
+    font-size: clamp(8px, 0.85vw, 11px);
     color: #ffe4a3;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     white-space: nowrap;
@@ -105,7 +131,7 @@
     text-overflow: ellipsis;
     pointer-events: none;
   }
-  .hotspot-gmail { left: 78.8%; top: 31.8%; width: 17.8%; height: 13.8%; border-radius: 12px; }
+  .hotspot-gmail { left: 78.8%; top: 33.2%; width: 17.8%; height: 13.8%; border-radius: 12px; }
   .hotspot-start { left: 79.6%; top: 51.8%; width: 16.2%; height: 8.4%; border-radius: 999px; }
   .hotspot-server { left: 80.2%; top: 62.2%; width: 15.0%; height: 7.5%; border-radius: 10px; }
 
@@ -375,14 +401,14 @@
 
   .world-btn-exit {
     position: absolute;
-    top: 2.6%;
-    right: 2.4%;
+    top: 7.5%;
+    right: 1.5%;
     background: linear-gradient(180deg, #4b3321, #2c1d12);
     border: 1.5px solid #c89d54;
     border-radius: 8px;
-    padding: 7px 14px;
+    padding: 6px 12px;
     color: #ffd27d;
-    font-size: clamp(9.5px, 1vw, 13px);
+    font-size: clamp(9px, 0.95vw, 12px);
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.7);
@@ -515,7 +541,10 @@
 </head>
 <body>
 
-<div class="game-screen">
+<div class="game-screen" id="gameScreen">
+
+  <!-- ปุ่มเข้า/ออก Fullscreen -->
+  <button type="button" class="fullscreen-toggle-btn" id="btnFullscreen" onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
 
   <!-- ฉากที่ 1: หน้าจอ LOGIN -->
   <div class="scene is-active" id="sceneLogin">
@@ -663,6 +692,35 @@
     auraIdx: 0
   };
 
+  // ================= ระบบ Fullscreen =================
+  function toggleFullscreen() {
+    playClickSound(650);
+    const target = document.getElementById('gameScreen') || document.documentElement;
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+    if (!isFs) {
+      const req = target.requestFullscreen || target.webkitRequestFullscreen || document.documentElement.requestFullscreen;
+      if (req) {
+        req.call(target).catch(() => {
+          showPopup('โหมดเต็มจอ', 'หากเบราว์เซอร์ไม่อนุญาตให้กดเต็มจอโดยตรง ให้แตะเมนูจุดสามจุด (⋮) แล้วเลือก "เต็มจอ" หรือ "เพิ่มไปยังหน้าจอหลัก" ครับ');
+        });
+      }
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document).catch(() => {});
+    }
+  }
+
+  function syncFullscreenButton() {
+    const btn = document.getElementById('btnFullscreen');
+    if (!btn) return;
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    btn.innerText = isFs ? '✕ EXIT FULLSCREEN' : '⛶ FULLSCREEN';
+  }
+
+  document.addEventListener('fullscreenchange', syncFullscreenButton);
+  document.addEventListener('webkitfullscreenchange', syncFullscreenButton);
+
   // ================= โหลดไฟล์ภาพจาก GitHub =================
   let homeMapImg = null;
   let homeMapReady = false;
@@ -743,7 +801,6 @@
     });
   }
 
-  // วาดตัวละครเต็มตัวจาก human_m_preview.jpg บนหน้าสร้างตัวละครและแท่นยืน
   function drawPreviewFrame(canvas, cfg) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -1029,7 +1086,7 @@
     y: 520,
     speed: 230,
     facing: 1,
-    mode: 'idle',    // 'idle' | 'walk' | 'melee' | 'ranged'
+    mode: 'idle',
     frame: 0,
     frameTimer: 0,
     isMoving: false,
