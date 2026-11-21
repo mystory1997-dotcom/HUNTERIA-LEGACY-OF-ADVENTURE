@@ -13,6 +13,85 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
+   
+<script>
+/* =========================================
+   HUNTERIA ASSET FIX
+   แก้ชื่อไฟล์ภาพที่มี Zero Width Space
+   โดยคงระบบเดิมทั้งหมดไว้
+========================================= */
+(function () {
+  const RAW =
+    "https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main";
+
+  const INVISIBLE = "\u200B";
+
+  // 1. แก้ภาพแผนที่ Home ให้เรียกไฟล์จริง
+  const worldScene = document.getElementById("sceneWorld");
+
+  if (worldScene) {
+    worldScene.style.backgroundImage =
+      `url("${RAW}/%E2%80%8Bhome_map.jpg")`;
+
+    worldScene.style.backgroundPosition = "center";
+    worldScene.style.backgroundSize = "100% 100%";
+    worldScene.style.backgroundRepeat = "no-repeat";
+    worldScene.style.backgroundColor = "#140d08";
+  }
+
+  // 2. โหลดภาพตัวละครจากชื่อไฟล์จริง
+  // ภาพ Preview ใช้ชื่อปกติ ส่วนภาพ Animation
+  // มีอักขระที่มองไม่เห็นอยู่ข้างหน้า
+  initAssets = function () {
+
+    loadSpriteImage(
+      [
+        "human_m_preview.jpg",
+        "human_m_preview.png",
+        `${RAW}/human_m_preview.jpg`
+      ],
+      function (processed) {
+        previewImg = processed;
+        previewReady = true;
+
+        renderCreatorPreview();
+        renderSlots();
+      }
+    );
+
+    Object.keys(sheets).forEach(function (key) {
+      const entry = sheets[key];
+
+      const base = entry.file.replace(/\.(jpg|png)$/i, "");
+
+      const hiddenName = INVISIBLE + base;
+
+      const candidates = [
+        hiddenName + ".jpg",
+        hiddenName + ".png",
+        `${RAW}/%E2%80%8B${base}.jpg`,
+        `${RAW}/%E2%80%8B${base}.png`
+      ];
+
+      loadSpriteImage(candidates, function (processed) {
+        const grid = detectGridLayout(processed, entry.cols);
+
+        entry.img = processed;
+        entry.cols = grid.cols;
+        entry.rows = grid.rows;
+        entry.ready = true;
+
+        if (typeof renderHomeWorld === "function") {
+          renderHomeWorld();
+        }
+      });
+    });
+  };
+
+  console.log("HUNTERIA: Asset fix loaded");
+})();
+</script>
+
   }
 
   body {
