@@ -36,7 +36,7 @@
 
   .fullscreen-toggle-btn {
     position: absolute;
-    top: 1.6%;
+    top: 2%;
     right: 1.5%;
     z-index: 25;
     background: linear-gradient(180deg, rgba(48, 32, 20, 0.92), rgba(24, 15, 9, 0.95));
@@ -44,7 +44,7 @@
     border-radius: 8px;
     padding: 5px 11px;
     color: #ffd982;
-    font-size: clamp(9px, 0.92vw, 12px);
+    font-size: clamp(9px, 0.9vw, 11.5px);
     font-weight: 700;
     letter-spacing: 0.4px;
     cursor: pointer;
@@ -150,38 +150,37 @@
 
   .pedestal-slot {
     position: absolute;
-    top: 38%;
-    width: 13.5%;
-    height: 48%;
-    border-radius: 16px;
+    top: 44%;
+    width: 13.2%;
+    height: 36%;
+    border-radius: 14px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 12%;
-    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    padding-bottom: 10%;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .pedestal-slot:active { transform: scale(0.96); }
-  .slot-0 { left: 12.2%; }
-  .slot-1 { left: 28.0%; }
-  .slot-2 { left: 43.4%; }
-  .slot-3 { left: 58.6%; }
+  .slot-0 { left: 12.4%; }
+  .slot-1 { left: 28.1%; }
+  .slot-2 { left: 43.5%; }
+  .slot-3 { left: 58.7%; }
 
-  /* วงกลมรูนจัดกึ่งกลางล้อมตัวละครพอดี */
   .slot-rune {
     position: absolute;
     left: 50%;
-    top: 26%;
-    width: 68%;
+    bottom: 8%;
+    width: 66%;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
-    border: 2px solid rgba(255, 220, 120, 0.92);
-    box-shadow: 0 0 22px rgba(255, 200, 80, 0.8), inset 0 0 14px rgba(255, 225, 140, 0.55);
-    background: radial-gradient(circle, rgba(255, 226, 145, 0.22) 0%, transparent 72%);
+    border: 2px solid rgba(255, 224, 125, 0.95);
+    box-shadow: 0 0 22px rgba(255, 200, 80, 0.85), inset 0 0 14px rgba(255, 225, 140, 0.6);
+    background: radial-gradient(circle, rgba(255, 226, 145, 0.25) 0%, transparent 72%);
     opacity: 0;
-    transform: translate(-50%, 0) scale(0.82);
-    transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translate(-50%, 0) scale(0.78);
+    transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
     z-index: 1;
   }
@@ -195,56 +194,33 @@
     50% { box-shadow: 0 0 28px rgba(255, 225, 130, 1), inset 0 0 18px rgba(255, 240, 180, 0.75); }
   }
 
-  .slot-avatar-canvas {
-    width: 84%;
-    aspect-ratio: 1 / 1;
-    z-index: 2;
-    margin-bottom: -6%;
+  .slot-head-tag {
+    position: relative;
+    z-index: 4;
+    margin-bottom: -14%;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(16, 10, 6, 0.78);
+    border: 1px solid rgba(255, 215, 125, 0.75);
+    color: #ffe699;
+    font-size: clamp(7.5px, 0.8vw, 10.5px);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 1);
+    white-space: nowrap;
     pointer-events: none;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.85));
   }
 
-  /* ป้ายชื่อตัวละครกราฟิกแฟนตาซีขอบทอง */
-  .slot-char-badge {
-    z-index: 4;
-    position: relative;
-    margin-top: 4px;
-    min-width: 78%;
-    background: linear-gradient(180deg, rgba(64, 41, 22, 0.96), rgba(22, 13, 8, 0.96));
-    border: 1.5px solid #e2b05c;
-    border-radius: 9px;
-    padding: 4px 8px 5px;
-    text-align: center;
-    color: #fff5dc;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 232, 168, 0.45);
+  .slot-avatar-canvas {
+    width: 90%;
+    aspect-ratio: 1 / 1;
+    z-index: 3;
     pointer-events: none;
+    filter: drop-shadow(0 0 8px rgba(255, 225, 150, 0.45)) drop-shadow(0 8px 12px rgba(0, 0, 0, 0.92));
   }
-  .slot-char-badge::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 4px;
-    border-radius: 999px;
-    background: #ffd982;
-    box-shadow: 0 0 8px #ffd27d;
-  }
-  .slot-char-badge strong {
-    display: block;
-    font-size: clamp(9px, 0.98vw, 13px);
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    color: #ffe08a;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
-  }
-  .slot-char-badge span {
-    display: block;
-    margin-top: 1px;
-    font-size: clamp(7.5px, 0.8vw, 10.5px);
-    color: #d9c29a;
-    letter-spacing: 0.3px;
+  .pedestal-slot.is-selected .slot-avatar-canvas {
+    transform: translateY(-3px) scale(1.04);
+    filter: drop-shadow(0 0 12px rgba(255, 225, 130, 0.8)) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.95));
   }
 
   .panel-slot-info {
@@ -336,7 +312,7 @@
     width: 17.6%;
     aspect-ratio: 1 / 1;
     pointer-events: none;
-    filter: drop-shadow(0 12px 18px rgba(0,0,0,0.92));
+    filter: drop-shadow(0 0 10px rgba(255, 225, 150, 0.5)) drop-shadow(0 12px 18px rgba(0,0,0,0.92));
   }
 
   .stat-circle-val {
@@ -386,30 +362,31 @@
 
   .world-hud-top {
     position: absolute;
-    top: 2.6%;
-    left: 2.4%;
-    background: linear-gradient(180deg, rgba(46, 31, 20, 0.92), rgba(26, 17, 11, 0.92));
+    top: 2.2%;
+    left: 2%;
+    background: linear-gradient(180deg, rgba(46, 31, 20, 0.92), rgba(26, 17, 11, 0.94));
     border: 1.5px solid #c89d54;
-    border-radius: 10px;
-    padding: 8px 14px;
+    border-radius: 9px;
+    padding: 6px 12px;
     color: #fff2d6;
     box-shadow: 0 6px 18px rgba(0,0,0,0.75);
     pointer-events: none;
+    z-index: 8;
   }
   .world-hud-name {
-    font-size: clamp(11px, 1.25vw, 16px);
+    font-size: clamp(10px, 1.15vw, 15px);
     font-weight: 800;
     color: #ffd27d;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   .world-hud-bars {
     display: flex;
-    gap: 10px;
-    font-size: clamp(9px, 0.95vw, 12px);
+    gap: 8px;
+    font-size: clamp(8.5px, 0.88vw, 11.5px);
     color: #ebd7b2;
   }
   .hud-pill {
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.45);
     border: 1px solid rgba(212, 163, 89, 0.35);
@@ -417,30 +394,33 @@
 
   .world-location-banner {
     position: absolute;
-    top: 2.6%;
+    top: 2.2%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(24, 15, 10, 0.85);
+    background: rgba(24, 15, 10, 0.88);
     border: 1px solid #d4a359;
     border-radius: 999px;
-    padding: 5px 18px;
+    padding: 4px 14px;
     color: #ffe4a3;
-    font-size: clamp(10px, 1.1vw, 14px);
+    font-size: clamp(9px, 0.98vw, 13px);
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
     pointer-events: none;
+    z-index: 8;
   }
 
   .world-btn-exit {
     position: absolute;
-    top: 7.8%;
+    top: 8.5%;
     right: 1.5%;
+    z-index: 8;
     background: linear-gradient(180deg, #4b3321, #2c1d12);
     border: 1.5px solid #c89d54;
     border-radius: 8px;
-    padding: 6px 12px;
+    padding: 5px 11px;
     color: #ffd27d;
-    font-size: clamp(9px, 0.95vw, 12px);
+    font-size: clamp(8.5px, 0.9vw, 11.5px);
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.7);
@@ -591,23 +571,23 @@
 
     <div class="pedestal-slot slot-0" data-slot="0" onclick="selectSlot(0)">
       <div class="slot-rune"></div>
+      <div id="slotHead0"></div>
       <canvas class="slot-avatar-canvas" id="slotCanvas0" width="240" height="240"></canvas>
-      <div id="slotBadge0"></div>
     </div>
     <div class="pedestal-slot slot-1" data-slot="1" onclick="selectSlot(1)">
       <div class="slot-rune"></div>
+      <div id="slotHead1"></div>
       <canvas class="slot-avatar-canvas" id="slotCanvas1" width="240" height="240"></canvas>
-      <div id="slotBadge1"></div>
     </div>
     <div class="pedestal-slot slot-2" data-slot="2" onclick="selectSlot(2)">
       <div class="slot-rune"></div>
+      <div id="slotHead2"></div>
       <canvas class="slot-avatar-canvas" id="slotCanvas2" width="240" height="240"></canvas>
-      <div id="slotBadge2"></div>
     </div>
     <div class="pedestal-slot slot-3" data-slot="3" onclick="selectSlot(3)">
       <div class="slot-rune"></div>
+      <div id="slotHead3"></div>
       <canvas class="slot-avatar-canvas" id="slotCanvas3" width="240" height="240"></canvas>
-      <div id="slotBadge3"></div>
     </div>
 
     <div class="panel-slot-info">
@@ -711,10 +691,19 @@
   const GENDERS = ['ชาย (Male)', 'หญิง (Female)'];
 
   const AURAS = [
-    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.85)' },
-    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.85)' },
-    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.85)' },
-    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.85)' }
+    { name: 'ออร่าทอง',   glow: 'rgba(255, 215, 110, 0.92)' },
+    { name: 'ออร่าคราม',   glow: 'rgba(110, 205, 255, 0.92)' },
+    { name: 'ออร่ามรกต',  glow: 'rgba(130, 240, 150, 0.92)' },
+    { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.92)' }
+  ];
+
+  const HOME_MAP_CANDIDATES = [
+    'home_map.jpg',
+    'home_map.png',
+    'home.jpg',
+    'home.png',
+    'home_bg.jpg',
+    'cabin.jpg'
   ];
 
   let draft = {
@@ -753,7 +742,6 @@
 
   let homeMapImg = null;
   let homeMapReady = false;
-  let homeMapStatus = 'loading';
 
   let previewImg = null;
   let previewReady = false;
@@ -801,39 +789,52 @@
       }
       const url = candidates[idx++];
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onload = () => onSuccess(img, url);
-      img.onerror = tryNext;
+      img.onerror = () => {
+        const imgNoCors = new Image();
+        imgNoCors.onload = () => onSuccess(imgNoCors, url);
+        imgNoCors.onerror = tryNext;
+        imgNoCors.src = url;
+      };
       img.src = url;
     }
     tryNext();
+  }
+
+  function loadHomeMap() {
+    const ver = Date.now();
+    const rawBase = 'https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main';
+    const list = [];
+
+    HOME_MAP_CANDIDATES.forEach((name) => {
+      list.push(`${name}?v=${ver}`);
+      list.push(`./${name}?v=${ver}`);
+      list.push(`${rawBase}/${name}?v=${ver}`);
+    });
+
+    loadImageWithFallback(
+      list,
+      (img) => {
+        homeMapImg = img;
+        homeMapReady = true;
+      },
+      () => {
+        homeMapReady = false;
+      }
+    );
   }
 
   function initAssets() {
     const ver = Date.now();
     const rawBase = 'https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main';
 
-    homeMapStatus = 'loading';
-    loadImageWithFallback(
-      [
-        `home_map.jpg?v=${ver}`,
-        `home_map.png?v=${ver}`,
-        `${rawBase}/home_map.jpg?v=${ver}`,
-        `${rawBase}/home_map.png?v=${ver}`
-      ],
-      (img) => {
-        homeMapImg = img;
-        homeMapReady = true;
-        homeMapStatus = 'ok';
-      },
-      () => {
-        homeMapReady = false;
-        homeMapStatus = 'not_found';
-      }
-    );
+    loadHomeMap();
 
     loadImageWithFallback(
       [
         `human_m_preview.jpg?v=${ver}`,
+        `./human_m_preview.jpg?v=${ver}`,
         `human_m_preview.png?v=${ver}`,
         `${rawBase}/human_m_preview.jpg?v=${ver}`
       ],
@@ -854,6 +855,7 @@
       loadImageWithFallback(
         [
           `${baseName}.jpg?v=${ver}`,
+          `./${baseName}.jpg?v=${ver}`,
           `${baseName}.png?v=${ver}`,
           `${rawBase}/${baseName}.jpg?v=${ver}`
         ],
@@ -881,17 +883,17 @@
       ctx.fillStyle = 'rgba(255, 224, 150, 0.85)';
       ctx.font = 'bold 13px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Loading Character...', cw / 2, ch / 2);
+      ctx.fillText('Loading...', cw / 2, ch / 2);
       return;
     }
 
     ctx.save();
     ctx.shadowColor = aura.glow;
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 22;
     ctx.drawImage(
       previewImg,
       0, 0, previewImg.width, previewImg.height,
-      cw * 0.04, ch * 0.02, cw * 0.92, ch * 0.96
+      cw * 0.03, ch * 0.03, cw * 0.94, ch * 0.94
     );
     ctx.restore();
   }
@@ -972,7 +974,7 @@
       stopWorldLoop();
       renderCreatorPreview();
     } else if (sceneId === 'sceneWorld') {
-      if (!homeMapReady) initAssets();
+      if (!homeMapReady) loadHomeMap();
       startWorldLoop();
     }
   }
@@ -1025,19 +1027,18 @@
   function renderSlots() {
     for (let i = 0; i < 4; i++) {
       const slotEl = document.querySelector('.slot-' + i);
-      const badgeEl = document.getElementById('slotBadge' + i);
+      const headEl = document.getElementById('slotHead' + i);
       const canvasEl = document.getElementById('slotCanvas' + i);
       if (selectedSlot === i) slotEl.classList.add('is-selected');
       else slotEl.classList.remove('is-selected');
 
       const char = characters[i];
       if (char) {
-        const rInfo = RACES[char.race] || RACES.Human;
         drawPreviewFrame(canvasEl, char);
-        badgeEl.innerHTML = `<div class="slot-char-badge"><strong>${escapeHtml(char.name)}</strong><span>${rInfo.th} • Lv.${char.level || 1}</span></div>`;
+        headEl.innerHTML = `<div class="slot-head-tag">${escapeHtml(char.name)}</div>`;
       } else {
         if (canvasEl) canvasEl.getContext('2d').clearRect(0, 0, canvasEl.width, canvasEl.height);
-        badgeEl.innerHTML = '';
+        headEl.innerHTML = '';
       }
     }
 
@@ -1304,6 +1305,66 @@
     }
   }
 
+  function drawFallbackCabinRoom(ctx, W, H) {
+    const wallGrad = ctx.createLinearGradient(0, 0, 0, H * 0.62);
+    wallGrad.addColorStop(0, '#3e2313');
+    wallGrad.addColorStop(1, '#5b351c');
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, W, H * 0.62);
+
+    ctx.strokeStyle = 'rgba(24, 12, 6, 0.55)';
+    ctx.lineWidth = 3;
+    for (let y = 70; y < H * 0.62; y += 70) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+
+    const floorGrad = ctx.createLinearGradient(0, H * 0.58, 0, H);
+    floorGrad.addColorStop(0, '#6c4224');
+    floorGrad.addColorStop(1, '#3b2110');
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(0, H * 0.58, W, H * 0.42);
+
+    ctx.strokeStyle = 'rgba(20, 10, 4, 0.45)';
+    ctx.lineWidth = 2;
+    for (let y = H * 0.64; y < H; y += 44) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = '#68625c';
+    ctx.fillRect(W * 0.42, H * 0.24, W * 0.16, H * 0.36);
+    ctx.fillStyle = '#1b110c';
+    ctx.fillRect(W * 0.455, H * 0.38, W * 0.09, H * 0.22);
+
+    const fireGlow = ctx.createRadialGradient(W * 0.5, H * 0.5, 8, W * 0.5, H * 0.5, 110);
+    fireGlow.addColorStop(0, 'rgba(255, 225, 120, 0.95)');
+    fireGlow.addColorStop(0.5, 'rgba(255, 120, 35, 0.55)');
+    fireGlow.addColorStop(1, 'rgba(255, 80, 10, 0)');
+    ctx.fillStyle = fireGlow;
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.5, 110, 0, Math.PI * 2);
+    ctx.fill();
+
+    [W * 0.14, W * 0.76].forEach(wx => {
+      ctx.fillStyle = '#f7cf79';
+      ctx.fillRect(wx, H * 0.22, 110, 125);
+      ctx.strokeStyle = '#3b200e';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(wx, H * 0.22, 110, 125);
+      ctx.beginPath();
+      ctx.moveTo(wx + 55, H * 0.22);
+      ctx.lineTo(wx + 55, H * 0.22 + 125);
+      ctx.moveTo(wx, H * 0.22 + 62);
+      ctx.lineTo(wx + 110, H * 0.22 + 62);
+      ctx.stroke();
+    });
+  }
+
   function renderHomeWorld() {
     const canvas = document.getElementById('worldCanvas');
     if (!canvas) return;
@@ -1316,16 +1377,7 @@
     if (homeMapReady && homeMapImg) {
       ctx.drawImage(homeMapImg, 0, 0, W, H);
     } else {
-      ctx.fillStyle = '#3b2416';
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#ffd27d';
-      ctx.font = 'bold 18px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(
-        homeMapStatus === 'loading' ? 'กำลังโหลดภาพแมพบ้าน...' : 'ไม่พบไฟล์ home_map.jpg ในโฟลเดอร์เว็บ',
-        W / 2,
-        H * 0.24
-      );
+      drawFallbackCabinRoom(ctx, W, H);
     }
 
     drawWorldPlayer(ctx);
@@ -1336,7 +1388,7 @@
     const bobOffset = (player.mode === 'idle') ? Math.sin(player.idleBob) * 2 : 0;
 
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.beginPath();
     ctx.ellipse(player.x, player.y, 34, 10, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -1352,7 +1404,7 @@
     ctx.scale(player.facing, 1);
 
     ctx.shadowColor = aura.glow;
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 16;
 
     if (activeSheet && activeSheet.ready && activeSheet.img) {
       const fw = activeSheet.img.width / activeSheet.cols;
@@ -1365,6 +1417,12 @@
       ctx.drawImage(
         activeSheet.img,
         sx, sy, fw, sh,
+        -68, -126, 136, 136
+      );
+    } else if (previewReady && previewImg) {
+      ctx.drawImage(
+        previewImg,
+        0, 0, previewImg.width, previewImg.height,
         -64, -122, 128, 128
       );
     } else {
@@ -1377,16 +1435,17 @@
 
     if (activeCharacter) {
       ctx.save();
-      ctx.font = 'bold 14px sans-serif';
+      ctx.font = 'bold 13px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(20, 12, 7, 0.85)';
-      const textW = ctx.measureText(activeCharacter.name).width + 18;
-      ctx.fillRect(player.x - textW / 2, player.y - 148, textW, 22);
-      ctx.strokeStyle = 'rgba(226, 176, 92, 0.8)';
+      const label = activeCharacter.name;
+      const textW = ctx.measureText(label).width + 16;
+      ctx.fillStyle = 'rgba(18, 11, 7, 0.82)';
+      ctx.fillRect(player.x - textW / 2, player.y - 144, textW, 20);
+      ctx.strokeStyle = 'rgba(255, 215, 125, 0.78)';
       ctx.lineWidth = 1;
-      ctx.strokeRect(player.x - textW / 2, player.y - 148, textW, 22);
-      ctx.fillStyle = '#ffe08a';
-      ctx.fillText(activeCharacter.name, player.x, player.y - 132);
+      ctx.strokeRect(player.x - textW / 2, player.y - 144, textW, 20);
+      ctx.fillStyle = '#ffe699';
+      ctx.fillText(label, player.x, player.y - 130);
       ctx.restore();
     }
   }
