@@ -14,83 +14,7 @@
     -webkit-touch-callout: none;
     user-select: none;
    
-<script>
-/* =========================================
-   HUNTERIA ASSET FIX
-   แก้ชื่อไฟล์ภาพที่มี Zero Width Space
-   โดยคงระบบเดิมทั้งหมดไว้
-========================================= */
-(function () {
-  const RAW =
-    "https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main";
 
-  const INVISIBLE = "\u200B";
-
-  // 1. แก้ภาพแผนที่ Home ให้เรียกไฟล์จริง
-  const worldScene = document.getElementById("sceneWorld");
-
-  if (worldScene) {
-    worldScene.style.backgroundImage =
-      `url("${RAW}/%E2%80%8Bhome_map.jpg")`;
-
-    worldScene.style.backgroundPosition = "center";
-    worldScene.style.backgroundSize = "100% 100%";
-    worldScene.style.backgroundRepeat = "no-repeat";
-    worldScene.style.backgroundColor = "#140d08";
-  }
-
-  // 2. โหลดภาพตัวละครจากชื่อไฟล์จริง
-  // ภาพ Preview ใช้ชื่อปกติ ส่วนภาพ Animation
-  // มีอักขระที่มองไม่เห็นอยู่ข้างหน้า
-  initAssets = function () {
-
-    loadSpriteImage(
-      [
-        "human_m_preview.jpg",
-        "human_m_preview.png",
-        `${RAW}/human_m_preview.jpg`
-      ],
-      function (processed) {
-        previewImg = processed;
-        previewReady = true;
-
-        renderCreatorPreview();
-        renderSlots();
-      }
-    );
-
-    Object.keys(sheets).forEach(function (key) {
-      const entry = sheets[key];
-
-      const base = entry.file.replace(/\.(jpg|png)$/i, "");
-
-      const hiddenName = INVISIBLE + base;
-
-      const candidates = [
-        hiddenName + ".jpg",
-        hiddenName + ".png",
-        `${RAW}/%E2%80%8B${base}.jpg`,
-        `${RAW}/%E2%80%8B${base}.png`
-      ];
-
-      loadSpriteImage(candidates, function (processed) {
-        const grid = detectGridLayout(processed, entry.cols);
-
-        entry.img = processed;
-        entry.cols = grid.cols;
-        entry.rows = grid.rows;
-        entry.ready = true;
-
-        if (typeof renderHomeWorld === "function") {
-          renderHomeWorld();
-        }
-      });
-    });
-  };
-
-  console.log("HUNTERIA: Asset fix loaded");
-})();
-</script>
 
   }
 
@@ -161,7 +85,7 @@
   #sceneCreate { background-image: url('create.jpg'); }
   #sceneWorld {
     background-color: #140d08;
-    background-image: url('home_map.jpg'), url('home_map.png'), url('https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main/home_map.jpg');
+    background-image: url('home_map.jpg'), url('https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main/%E2%80%8Bhome_map.jpg');
     background-position: center;
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -828,31 +752,52 @@
 
   function removeGreenScreenSafe(img) {
     try {
-      const w = img.naturalWidth;
-      const h = img.naturalHeight;
+      const w = img.naturalWidth, h = img.naturalHeight;
       if (!w || !h) return img;
       const c = document.createElement('canvas');
-      c.width = w;
-      c.height = h;
+      c.width = w; c.height = h;
       const ctx = c.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-
-      const imgData = ctx.getImageData(0, 0, w, h);
-      const d = imgData.data;
+      const id = ctx.getImageData(0, 0, w, h), d = id.data;
       for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i + 1], b = d[i + 2];
-        if (g > 125 && g > r * 1.2 && g > b * 1.2) {
-          d[i + 3] = 0;
-        } else if (g > 100 && g > r * 1.1 && g > b * 1.1) {
-          d[i + 1] = Math.min(r, b);
-          d[i + 3] = 80;
+        const m = Math.max(d[i], d[i + 2]), diff = d[i + 1] - m;
+        if (diff > 25) {
+          d[i + 3] = Math.round(d[i + 3] * Math.max(0, Math.min(1, 1 - (diff - 25) / 90)));
+          d[i + 1] = m;
         }
       }
-      ctx.putImageData(imgData, 0, 0);
+      ctx.putImageData(id, 0, 0);
       return c;
     } catch (e) {
       return img;
     }
+  }
+
+  // หาเฟรมจริงในสไปรต์ชีต (ตัดตามช่องว่างระหว่างตัวละคร) แล้วจัดจุดยึดให้ตรงกันทุกเฟรม
+  function buildFrames(c, cols) {
+    const w = c.width, h = c.height, T = 60;
+    const d = c.getContext('2d').getImageData(0, 0, w, h).data;
+    const cnt = new Uint16Array(w);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > T) cnt[x]++;
+    let runs = [], st = -1, last = -9;
+    for (let x = 0; x < w; x++) {
+      if (cnt[x] > 1) { if (st < 0) st = x; last = x; }
+      else if (st >= 0 && x - last > 3) { runs.push([st, last]); st = -1; }
+    }
+    if (st >= 0) runs.push([st, last]);
+    runs = runs.filter(r => r[1] - r[0] >= 8);
+    if (runs.length !== cols) {
+      runs = [];
+      for (let i = 0; i < cols; i++) runs.push([Math.floor(i * w / cols), Math.floor((i + 1) * w / cols) - 1]);
+    }
+    return runs.map(([x0, x1]) => {
+      let y0 = h, y1 = 0;
+      for (let y = 0; y < h; y++) for (let x = x0; x <= x1; x++) if (d[(y * w + x) * 4 + 3] > T) { if (y < y0) y0 = y; if (y > y1) y1 = y; break; }
+      const hh = y1 - y0 + 1, headEnd = y0 + Math.max(4, Math.floor(hh * 0.32));
+      let sx = 0, n = 0;
+      for (let y = y0; y <= headEnd; y++) for (let x = x0; x <= x1; x++) if (d[(y * w + x) * 4 + 3] > T) { sx += x; n++; }
+      return { sx: x0, sy: y0, sw: x1 - x0 + 1, sh: hh, ax: (n ? sx / n : (x0 + x1) / 2) - x0 };
+    });
   }
 
   function loadSpriteImage(urls, onLoaded) {
@@ -861,6 +806,7 @@
       if (i >= urls.length) return;
       const url = urls[i++];
       const img = new Image();
+      if (/^https?:/.test(url)) img.crossOrigin = 'anonymous';
       img.onload = () => {
         onLoaded(removeGreenScreenSafe(img));
       };
@@ -900,12 +846,12 @@
       const entry = sheets[key];
       const base = entry.file.replace(/\.(jpg|png)$/i, '');
       loadSpriteImage(
-        [`${base}.jpg`, `${base}.png`, `${rawBase}/${base}.jpg`],
+        [`${base}.jpg`, `${base}.png`, `${rawBase}/${base}.jpg`, `${rawBase}/%E2%80%8B${base}.jpg`],
         (processed) => {
-          const grid = detectGridLayout(processed, entry.cols);
           entry.img = processed;
-          entry.cols = grid.cols;
-          entry.rows = grid.rows;
+          entry.frames = buildFrames(processed, entry.cols);
+          entry.cols = entry.frames.length;
+          entry.rows = 1;
           entry.ready = true;
         }
       );
@@ -1193,7 +1139,10 @@
     frame: 0,
     frameTimer: 0,
     isMoving: false,
-    animClock: 0
+    animClock: 0,
+    vx: 0,
+    vy: 0,
+    walkPhase: 0
   };
 
   const moveInput = { up: false, down: false, left: false, right: false };
@@ -1291,26 +1240,19 @@
   }
 
   function updateHomeWorld(dt) {
-    let vx = 0;
-    let vy = 0;
-    if (moveInput.left)  vx -= 1;
-    if (moveInput.right) vx += 1;
-    if (moveInput.up)    vy -= 0.78;
-    if (moveInput.down)  vy += 0.78;
-
-    const len = Math.hypot(vx, vy);
-    player.isMoving = len > 0;
+    let ix = (moveInput.right ? 1 : 0) - (moveInput.left ? 1 : 0);
+    let iy = ((moveInput.down ? 1 : 0) - (moveInput.up ? 1 : 0)) * 0.78;
+    const len = Math.hypot(ix, iy);
+    if (len > 0) { ix /= len; iy /= len; }
+    const k = 1 - Math.exp(-dt * (len > 0 ? 14 : 20));
+    player.vx += (ix * player.speed - player.vx) * k;
+    player.vy += (iy * player.speed - player.vy) * k;
+    player.x = Math.max(140, Math.min(1140, player.x + player.vx * dt));
+    player.y = Math.max(430, Math.min(675, player.y + player.vy * dt));
+    const sp = Math.hypot(player.vx, player.vy);
+    player.isMoving = sp > 18;
     player.animClock += dt;
-
-    if (player.isMoving) {
-      vx /= len;
-      vy /= len;
-      player.x = Math.max(140, Math.min(1140, player.x + vx * player.speed * dt));
-      player.y = Math.max(430, Math.min(675, player.y + vy * player.speed * dt));
-      if (Math.abs(vx) > 0.05) {
-        player.facing = vx < 0 ? -1 : 1;
-      }
-    }
+    if (Math.abs(ix) > 0.05) player.facing = ix < 0 ? -1 : 1;
 
     if (player.mode === 'melee' || player.mode === 'ranged') {
       const atkSheet = sheets[player.mode];
@@ -1329,15 +1271,13 @@
 
     if (player.isMoving) {
       player.mode = 'walk';
-      const totalWalkFrames = (sheets.walk.cols * sheets.walk.rows) || 6;
-      player.frameTimer += dt;
-      if (player.frameTimer >= 0.085) {
-        player.frameTimer = 0;
-        player.frame = (player.frame + 1) % totalWalkFrames;
-      }
+      const total = (sheets.walk.cols * sheets.walk.rows) || 6;
+      player.walkPhase = (player.walkPhase + sp * dt / 24) % total;
+      player.frame = Math.floor(player.walkPhase);
     } else {
       player.mode = 'idle';
-      player.frame = 0;
+      player.walkPhase = 1;
+      player.frame = 1;
       player.frameTimer = 0;
     }
   }
@@ -1356,12 +1296,12 @@
   function drawWorldPlayer(ctx) {
     const aura = activeCharacter ? AURAS[(activeCharacter.auraIdx || 0) % AURAS.length] : AURAS[0];
 
-    const walkStep = player.isMoving ? Math.abs(Math.sin(player.animClock * 13)) : 0;
-    const walkTilt = player.isMoving ? Math.sin(player.animClock * 13) * 0.08 : 0;
-    const idleBreath = !player.isMoving ? Math.sin(player.animClock * 3.2) * 2.5 : 0;
+    const walkStep = player.isMoving ? (1 + Math.cos((player.walkPhase - 1) * 2 * Math.PI / 3)) / 2 : 0;
+    const walkTilt = player.isMoving ? Math.min(1, Math.hypot(player.vx, player.vy) / player.speed) * 0.04 : 0;
+    const idleBreath = !player.isMoving ? Math.sin(player.animClock * 3.2) * 1.5 : 0;
     const atkLunging = (player.mode === 'melee') ? Math.sin((player.frame / 4) * Math.PI) * 18 : 0;
 
-    const bobY = -walkStep * 9 + idleBreath;
+    const bobY = -walkStep * 5 + idleBreath;
 
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
@@ -1385,24 +1325,11 @@
     ctx.shadowBlur = 16;
 
     if (activeSheet && activeSheet.ready && activeSheet.img) {
-      const cols = activeSheet.cols || 6;
-      const rows = activeSheet.rows || 1;
-      const fw = activeSheet.img.width / cols;
-      const fh = activeSheet.img.height / rows;
-      const total = cols * rows;
-      const frameIdx = player.frame % total;
-      const col = frameIdx % cols;
-      const row = Math.floor(frameIdx / cols);
-
-      const sx = col * fw;
-      const sy = row * fh + (rows === 1 ? fh * 0.18 : 0);
-      const sh = rows === 1 ? fh * 0.64 : fh;
-
-      ctx.drawImage(
-        activeSheet.img,
-        sx, sy, fw, sh,
-        -68, -126, 136, 136
-      );
+      const fr = activeSheet.frames && activeSheet.frames[player.frame % activeSheet.frames.length];
+      if (fr) {
+        const sc = 1.2;
+        ctx.drawImage(activeSheet.img, fr.sx, fr.sy, fr.sw, fr.sh, -fr.ax * sc, 4 - fr.sh * sc, fr.sw * sc, fr.sh * sc);
+      }
     } else if (previewReady && previewImg) {
       ctx.drawImage(
         previewImg,
