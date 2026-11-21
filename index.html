@@ -80,7 +80,13 @@
   #sceneLogin { background-image: url('login.jpg'); }
   #sceneSelect { background-image: url('select.jpg'); }
   #sceneCreate { background-image: url('create.jpg'); }
-  #sceneWorld { background: #140d08; }
+  #sceneWorld {
+    background-color: #140d08;
+    background-image: url('home_map.jpg'), url('home_map.png'), url('https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main/home_map.jpg');
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
 
   .game-btn {
     position: absolute;
@@ -358,6 +364,7 @@
     width: 100%;
     height: 100%;
     display: block;
+    background: transparent;
   }
 
   .world-hud-top {
@@ -697,15 +704,6 @@
     { name: 'ออร่าเพลิง',  glow: 'rgba(255, 130, 105, 0.92)' }
   ];
 
-  const HOME_MAP_CANDIDATES = [
-    'home_map.jpg',
-    'home_map.png',
-    'home.jpg',
-    'home.png',
-    'home_bg.jpg',
-    'cabin.jpg'
-  ];
-
   let draft = {
     race: 'Human',
     genderIdx: 0,
@@ -740,22 +738,20 @@
   document.addEventListener('fullscreenchange', syncFullscreenButton);
   document.addEventListener('webkitfullscreenchange', syncFullscreenButton);
 
-  let homeMapImg = null;
-  let homeMapReady = false;
-
   let previewImg = null;
   let previewReady = false;
 
   const sheets = {
-    walk:   { img: null, ready: false, cols: 6, file: 'human_m_walk.jpg' },
-    melee:  { img: null, ready: false, cols: 4, file: 'human_m_atk_melee.jpg' },
-    ranged: { img: null, ready: false, cols: 4, file: 'human_m_atk_ranged.jpg' }
+    walk:   { img: null, ready: false, cols: 6, rows: 1, file: 'human_m_walk.jpg' },
+    melee:  { img: null, ready: false, cols: 4, rows: 1, file: 'human_m_atk_melee.jpg' },
+    ranged: { img: null, ready: false, cols: 4, rows: 1, file: 'human_m_atk_ranged.jpg' }
   };
 
-  function keyGreenToAlpha(img) {
+  function removeGreenScreenSafe(img) {
     try {
       const w = img.naturalWidth;
       const h = img.naturalHeight;
+      if (!w || !h) return img;
       const c = document.createElement('canvas');
       c.width = w;
       c.height = h;
@@ -766,11 +762,11 @@
       const d = imgData.data;
       for (let i = 0; i < d.length; i += 4) {
         const r = d[i], g = d[i + 1], b = d[i + 2];
-        if (g > 130 && g > r * 1.22 && g > b * 1.22) {
+        if (g > 125 && g > r * 1.2 && g > b * 1.2) {
           d[i + 3] = 0;
-        } else if (g > 105 && g > r * 1.12 && g > b * 1.12) {
+        } else if (g > 100 && g > r * 1.1 && g > b * 1.1) {
           d[i + 1] = Math.min(r, b);
-          d[i + 3] = 75;
+          d[i + 3] = 80;
         }
       }
       ctx.putImageData(imgData, 0, 0);
@@ -780,91 +776,58 @@
     }
   }
 
-  function loadImageWithFallback(candidates, onSuccess, onFail) {
-    let idx = 0;
-    function tryNext() {
-      if (idx >= candidates.length) {
-        if (onFail) onFail();
-        return;
-      }
-      const url = candidates[idx++];
+  function loadSpriteImage(urls, onLoaded) {
+    let i = 0;
+    function attempt() {
+      if (i >= urls.length) return;
+      const url = urls[i++];
       const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => onSuccess(img, url);
-      img.onerror = () => {
-        const imgNoCors = new Image();
-        imgNoCors.onload = () => onSuccess(imgNoCors, url);
-        imgNoCors.onerror = tryNext;
-        imgNoCors.src = url;
+      img.onload = () => {
+        onLoaded(removeGreenScreenSafe(img));
       };
+      img.onerror = attempt;
       img.src = url;
     }
-    tryNext();
+    attempt();
   }
 
-  function loadHomeMap() {
-    const ver = Date.now();
-    const rawBase = 'https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main';
-    const list = [];
-
-    HOME_MAP_CANDIDATES.forEach((name) => {
-      list.push(`${name}?v=${ver}`);
-      list.push(`./${name}?v=${ver}`);
-      list.push(`${rawBase}/${name}?v=${ver}`);
-    });
-
-    loadImageWithFallback(
-      list,
-      (img) => {
-        homeMapImg = img;
-        homeMapReady = true;
-      },
-      () => {
-        homeMapReady = false;
-      }
-    );
+  function detectGridLayout(img, defaultCols) {
+    const ratio = img.width / img.height;
+    if (defaultCols === 6) {
+      if (ratio < 2.2) return { cols: 3, rows: 2 };
+      return { cols: 6, rows: 1 };
+    }
+    if (defaultCols === 4) {
+      if (ratio < 1.8) return { cols: 2, rows: 2 };
+      return { cols: 4, rows: 1 };
+    }
+    return { cols: defaultCols, rows: 1 };
   }
 
   function initAssets() {
-    const ver = Date.now();
     const rawBase = 'https://raw.githubusercontent.com/mystory1997-dotcom/HUNTERIA-LEGACY-OF-ADVENTURE/main';
 
-    loadHomeMap();
-
-    loadImageWithFallback(
-      [
-        `human_m_preview.jpg?v=${ver}`,
-        `./human_m_preview.jpg?v=${ver}`,
-        `human_m_preview.png?v=${ver}`,
-        `${rawBase}/human_m_preview.jpg?v=${ver}`
-      ],
-      (img) => {
-        previewImg = keyGreenToAlpha(img);
+    loadSpriteImage(
+      ['human_m_preview.jpg', 'human_m_preview.png', `${rawBase}/human_m_preview.jpg`],
+      (processed) => {
+        previewImg = processed;
         previewReady = true;
         renderCreatorPreview();
         renderSlots();
-      },
-      () => {
-        previewReady = false;
       }
     );
 
     Object.keys(sheets).forEach((key) => {
       const entry = sheets[key];
-      const baseName = entry.file.replace(/\.(jpg|jpeg|png)$/i, '');
-      loadImageWithFallback(
-        [
-          `${baseName}.jpg?v=${ver}`,
-          `./${baseName}.jpg?v=${ver}`,
-          `${baseName}.png?v=${ver}`,
-          `${rawBase}/${baseName}.jpg?v=${ver}`
-        ],
-        (img) => {
-          entry.img = keyGreenToAlpha(img);
+      const base = entry.file.replace(/\.(jpg|png)$/i, '');
+      loadSpriteImage(
+        [`${base}.jpg`, `${base}.png`, `${rawBase}/${base}.jpg`],
+        (processed) => {
+          const grid = detectGridLayout(processed, entry.cols);
+          entry.img = processed;
+          entry.cols = grid.cols;
+          entry.rows = grid.rows;
           entry.ready = true;
-        },
-        () => {
-          entry.ready = false;
         }
       );
     });
@@ -879,13 +842,7 @@
 
     const aura = AURAS[(cfg.auraIdx || 0) % AURAS.length];
 
-    if (!previewReady || !previewImg) {
-      ctx.fillStyle = 'rgba(255, 224, 150, 0.85)';
-      ctx.font = 'bold 13px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Loading...', cw / 2, ch / 2);
-      return;
-    }
+    if (!previewReady || !previewImg) return;
 
     ctx.save();
     ctx.shadowColor = aura.glow;
@@ -974,7 +931,6 @@
       stopWorldLoop();
       renderCreatorPreview();
     } else if (sceneId === 'sceneWorld') {
-      if (!homeMapReady) loadHomeMap();
       startWorldLoop();
     }
   }
@@ -1152,13 +1108,13 @@
   const player = {
     x: 640,
     y: 540,
-    speed: 230,
+    speed: 240,
     facing: 1,
     mode: 'idle',
     frame: 0,
     frameTimer: 0,
     isMoving: false,
-    idleBob: 0
+    animClock: 0
   };
 
   const moveInput = { up: false, down: false, left: false, right: false };
@@ -1178,6 +1134,7 @@
     player.mode = 'idle';
     player.frame = 0;
     player.isMoving = false;
+    player.animClock = 0;
 
     switchScene('sceneWorld');
   }
@@ -1193,6 +1150,7 @@
     player.mode = type;
     player.frame = 0;
     player.frameTimer = 0;
+    player.animClock = 0;
   }
 
   function setupWorldControls() {
@@ -1263,6 +1221,7 @@
 
     const len = Math.hypot(vx, vy);
     player.isMoving = len > 0;
+    player.animClock += dt;
 
     if (player.isMoving) {
       vx /= len;
@@ -1276,9 +1235,9 @@
 
     if (player.mode === 'melee' || player.mode === 'ranged') {
       const atkSheet = sheets[player.mode];
-      const totalFrames = atkSheet.cols || 4;
+      const totalFrames = (atkSheet.cols * atkSheet.rows) || 4;
       player.frameTimer += dt;
-      if (player.frameTimer >= 0.09) {
+      if (player.frameTimer >= 0.085) {
         player.frameTimer = 0;
         player.frame++;
         if (player.frame >= totalFrames) {
@@ -1291,78 +1250,17 @@
 
     if (player.isMoving) {
       player.mode = 'walk';
+      const totalWalkFrames = (sheets.walk.cols * sheets.walk.rows) || 6;
       player.frameTimer += dt;
-      if (player.frameTimer >= 0.09) {
+      if (player.frameTimer >= 0.085) {
         player.frameTimer = 0;
-        player.frame = (player.frame + 1) % 6;
+        player.frame = (player.frame + 1) % totalWalkFrames;
       }
-      player.idleBob = 0;
     } else {
       player.mode = 'idle';
       player.frame = 0;
       player.frameTimer = 0;
-      player.idleBob += dt * 3;
     }
-  }
-
-  function drawFallbackCabinRoom(ctx, W, H) {
-    const wallGrad = ctx.createLinearGradient(0, 0, 0, H * 0.62);
-    wallGrad.addColorStop(0, '#3e2313');
-    wallGrad.addColorStop(1, '#5b351c');
-    ctx.fillStyle = wallGrad;
-    ctx.fillRect(0, 0, W, H * 0.62);
-
-    ctx.strokeStyle = 'rgba(24, 12, 6, 0.55)';
-    ctx.lineWidth = 3;
-    for (let y = 70; y < H * 0.62; y += 70) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-
-    const floorGrad = ctx.createLinearGradient(0, H * 0.58, 0, H);
-    floorGrad.addColorStop(0, '#6c4224');
-    floorGrad.addColorStop(1, '#3b2110');
-    ctx.fillStyle = floorGrad;
-    ctx.fillRect(0, H * 0.58, W, H * 0.42);
-
-    ctx.strokeStyle = 'rgba(20, 10, 4, 0.45)';
-    ctx.lineWidth = 2;
-    for (let y = H * 0.64; y < H; y += 44) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = '#68625c';
-    ctx.fillRect(W * 0.42, H * 0.24, W * 0.16, H * 0.36);
-    ctx.fillStyle = '#1b110c';
-    ctx.fillRect(W * 0.455, H * 0.38, W * 0.09, H * 0.22);
-
-    const fireGlow = ctx.createRadialGradient(W * 0.5, H * 0.5, 8, W * 0.5, H * 0.5, 110);
-    fireGlow.addColorStop(0, 'rgba(255, 225, 120, 0.95)');
-    fireGlow.addColorStop(0.5, 'rgba(255, 120, 35, 0.55)');
-    fireGlow.addColorStop(1, 'rgba(255, 80, 10, 0)');
-    ctx.fillStyle = fireGlow;
-    ctx.beginPath();
-    ctx.arc(W * 0.5, H * 0.5, 110, 0, Math.PI * 2);
-    ctx.fill();
-
-    [W * 0.14, W * 0.76].forEach(wx => {
-      ctx.fillStyle = '#f7cf79';
-      ctx.fillRect(wx, H * 0.22, 110, 125);
-      ctx.strokeStyle = '#3b200e';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(wx, H * 0.22, 110, 125);
-      ctx.beginPath();
-      ctx.moveTo(wx + 55, H * 0.22);
-      ctx.lineTo(wx + 55, H * 0.22 + 125);
-      ctx.moveTo(wx, H * 0.22 + 62);
-      ctx.lineTo(wx + 110, H * 0.22 + 62);
-      ctx.stroke();
-    });
   }
 
   function renderHomeWorld() {
@@ -1373,24 +1271,24 @@
     const H = 720;
 
     ctx.clearRect(0, 0, W, H);
-
-    if (homeMapReady && homeMapImg) {
-      ctx.drawImage(homeMapImg, 0, 0, W, H);
-    } else {
-      drawFallbackCabinRoom(ctx, W, H);
-    }
-
     drawWorldPlayer(ctx);
   }
 
   function drawWorldPlayer(ctx) {
     const aura = activeCharacter ? AURAS[(activeCharacter.auraIdx || 0) % AURAS.length] : AURAS[0];
-    const bobOffset = (player.mode === 'idle') ? Math.sin(player.idleBob) * 2 : 0;
+
+    const walkStep = player.isMoving ? Math.abs(Math.sin(player.animClock * 13)) : 0;
+    const walkTilt = player.isMoving ? Math.sin(player.animClock * 13) * 0.08 : 0;
+    const idleBreath = !player.isMoving ? Math.sin(player.animClock * 3.2) * 2.5 : 0;
+    const atkLunging = (player.mode === 'melee') ? Math.sin((player.frame / 4) * Math.PI) * 18 : 0;
+
+    const bobY = -walkStep * 9 + idleBreath;
 
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
+    const shadowScale = 1 - walkStep * 0.16;
     ctx.beginPath();
-    ctx.ellipse(player.x, player.y, 34, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(player.x, player.y, 34 * shadowScale, 10 * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -1400,19 +1298,26 @@
       sheets.walk;
 
     ctx.save();
-    ctx.translate(player.x, player.y + bobOffset);
+    ctx.translate(player.x + atkLunging * player.facing, player.y + bobY);
     ctx.scale(player.facing, 1);
+    ctx.rotate(walkTilt);
 
     ctx.shadowColor = aura.glow;
     ctx.shadowBlur = 16;
 
     if (activeSheet && activeSheet.ready && activeSheet.img) {
-      const fw = activeSheet.img.width / activeSheet.cols;
-      const fh = activeSheet.img.height;
-      const colIdx = Math.min(player.frame, activeSheet.cols - 1);
-      const sx = colIdx * fw;
-      const sy = fh * 0.22;
-      const sh = fh * 0.56;
+      const cols = activeSheet.cols || 6;
+      const rows = activeSheet.rows || 1;
+      const fw = activeSheet.img.width / cols;
+      const fh = activeSheet.img.height / rows;
+      const total = cols * rows;
+      const frameIdx = player.frame % total;
+      const col = frameIdx % cols;
+      const row = Math.floor(frameIdx / cols);
+
+      const sx = col * fw;
+      const sy = row * fh + (rows === 1 ? fh * 0.18 : 0);
+      const sh = rows === 1 ? fh * 0.64 : fh;
 
       ctx.drawImage(
         activeSheet.img,
@@ -1425,27 +1330,37 @@
         0, 0, previewImg.width, previewImg.height,
         -64, -122, 128, 128
       );
-    } else {
-      ctx.fillStyle = '#ffd27d';
+    }
+
+    if (player.mode === 'melee') {
+      ctx.strokeStyle = 'rgba(255, 240, 175, 0.9)';
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(0, -45, 24, 0, Math.PI * 2);
+      ctx.arc(32, -56, 44, -0.9, 0.9);
+      ctx.stroke();
+    } else if (player.mode === 'ranged') {
+      const boltX = 45 + player.frame * 55;
+      ctx.fillStyle = '#9be8ff';
+      ctx.beginPath();
+      ctx.ellipse(boltX, -58, 16, 4, 0, 0, Math.PI * 2);
       ctx.fill();
     }
+
     ctx.restore();
 
     if (activeCharacter) {
       ctx.save();
-      ctx.font = 'bold 13px sans-serif';
+      ctx.font = 'bold 12px sans-serif';
       ctx.textAlign = 'center';
       const label = activeCharacter.name;
-      const textW = ctx.measureText(label).width + 16;
-      ctx.fillStyle = 'rgba(18, 11, 7, 0.82)';
-      ctx.fillRect(player.x - textW / 2, player.y - 144, textW, 20);
+      const textW = ctx.measureText(label).width + 14;
+      ctx.fillStyle = 'rgba(18, 11, 7, 0.8)';
+      ctx.fillRect(player.x - textW / 2, player.y + bobY - 144, textW, 19);
       ctx.strokeStyle = 'rgba(255, 215, 125, 0.78)';
       ctx.lineWidth = 1;
-      ctx.strokeRect(player.x - textW / 2, player.y - 144, textW, 20);
+      ctx.strokeRect(player.x - textW / 2, player.y + bobY - 144, textW, 19);
       ctx.fillStyle = '#ffe699';
-      ctx.fillText(label, player.x, player.y - 130);
+      ctx.fillText(label, player.x, player.y + bobY - 130);
       ctx.restore();
     }
   }
